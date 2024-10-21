@@ -1,16 +1,23 @@
 
 import json
+
 from typing import Any     
 from .src.methods import Update     
           
           
 
 class BaseJsonPy:
+     """Its class not required. Parent class
+    
+     """
      __cache = {}
      __tablename__ = None
      
      
      def __new__(cls, path: str | None = None):
+          if cls == BaseJsonPy:
+               raise TypeError(f"{cls.__name__} its parent class")
+          
           if cls.__name__ not in cls.__cache:
                cls.__cache[cls.__name__] = path
                return f'class {cls.__name__} cached'
@@ -18,14 +25,14 @@ class BaseJsonPy:
 
      
      def __init__(self) -> None:
-         self.path = self.__cache[self.__class__.__name__]         
+          self.path = self.__cache[self.__class__.__name__]         
          
          
      def __tablename_or_class(self) -> str:
           name = self.__class__.__name__
           if self.__class__.__tablename__:
                name = self.__class__.__tablename__
-               
+          
           return name
      
      
@@ -49,6 +56,16 @@ class BaseJsonPy:
           
           
      def __add__(self, obj: dict[str, Any]) -> None:
+          """Add new data in json moodel
+
+          Args:
+              obj (dict[str, Any]): Arguments from user. Class() + {'id': 1, 'name': 'John'}
+
+          Raises:
+              ValueError: Table ... not exists
+              ValueError: Required argument ... for table ...
+              ValueError: Argument ... not exists
+          """
           name = self.__tablename_or_class()
 
           with open(self.path, 'r') as file:
@@ -60,7 +77,7 @@ class BaseJsonPy:
           types = data[name]['__types']
           for key in types:
                if key not in obj.keys():
-                    raise ValueError(f"Unexpected argument {key} for table {name}")
+                    raise ValueError(f"Required argument {key} for table {name}")
                
           for key in obj.keys():
                if key not in types:
@@ -84,7 +101,7 @@ class JsonPy:
      def __init__(
           self, 
           *args: type, 
-          path: str = 'base.json',
+          path: str = 'baser.json',
           free_arguments: list[str] | type | None = None
      ) -> None:
           
@@ -97,9 +114,10 @@ class JsonPy:
                if not attributes_class:
                     raise TypeError(f"Class {class_.__qualname__} dont have any annotations")
                
-               name = class_.__class__.__name__
+               name = class_.__qualname__
                if class_.__tablename__:
                     name = class_.__tablename__
+               
                     
                self._metadata[name] = {
                     '__types': [key for key in attributes_class.keys()],

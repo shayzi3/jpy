@@ -35,12 +35,24 @@ json_py = JsonPy(
      free_arguments=FreeArguments,
      # free_arguments = ['money', 'level', 'docs']
 )
-# json_py.create()
-User() + {
-     'id': 500,
-     'username': 'Vlad',
-     'password': '12345'
+json_py.create()
+
+user, car = User(), Car()
+
+user + {
+     'id': 543,
+     'username': 'Vladislab',
+     'password': '12345545'
 }
+print(len(user)) # return len list data
+
+car + {
+     'id': 4534343,
+     'name': 'Lada',
+     'owner_id': 99473256327
+}
+print(len(car))
+
 
 
 # After this code in json file will ↓

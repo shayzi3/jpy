@@ -7,24 +7,25 @@
         ],
         "data": [
             {
-                "id": 500,
-                "username": "Vlad",
-                "password": "12345"
-            },
-            {
-                "id": 500,
-                "username": "Vlad",
-                "password": "12345"
+                "id": 543,
+                "username": "Vladislab",
+                "password": "12345545"
             }
         ]
     },
-    "type": {
+    "Car": {
         "__types": [
             "id",
             "name",
             "owner_id"
         ],
-        "data": []
+        "data": [
+            {
+                "id": 4534343,
+                "name": "Lada",
+                "owner_id": 99473256327
+            }
+        ]
     },
     "__free": {
         "money": null,
