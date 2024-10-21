@@ -5,9 +5,20 @@
             "username",
             "password"
         ],
-        "data": []
+        "data": [
+            {
+                "id": 500,
+                "username": "Vlad",
+                "password": "12345"
+            },
+            {
+                "id": 500,
+                "username": "Vlad",
+                "password": "12345"
+            }
+        ]
     },
-    "Car": {
+    "type": {
         "__types": [
             "id",
             "name",

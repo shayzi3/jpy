@@ -1,9 +1,9 @@
 
-from jpy import JsonPy
+from jpy import JsonPy, BaseJsonPy
 
 
 # Create tables
-class User:
+class User(BaseJsonPy):
      __tablename__ = 'users' # Its not required attribute. If dont wrote __tablename__ that your table take name a class
      
      id: int
@@ -12,7 +12,7 @@ class User:
      
      
      
-class Car:     
+class Car(BaseJsonPy):  
      id: int
      name: str
      owner_id: int
@@ -35,7 +35,12 @@ json_py = JsonPy(
      free_arguments=FreeArguments,
      # free_arguments = ['money', 'level', 'docs']
 )
-json_py.create()
+# json_py.create()
+User() + {
+     'id': 500,
+     'username': 'Vlad',
+     'password': '12345'
+}
 
 
 # After this code in json file will ↓

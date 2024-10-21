@@ -1,7 +1,8 @@
 
-from ._jpy import JsonPy
+from ._jpy import JsonPy, BaseJsonPy
 
 
 __all__ = [
-     "JsonPy"
+     "JsonPy",
+     "BaseJsonPy"
 ]
