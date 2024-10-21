@@ -1,0 +1,23 @@
+{
+    "users": {
+        "__types": [
+            "id",
+            "username",
+            "password"
+        ],
+        "data": []
+    },
+    "Car": {
+        "__types": [
+            "id",
+            "name",
+            "owner_id"
+        ],
+        "data": []
+    },
+    "__free": {
+        "money": null,
+        "level": null,
+        "docs": null
+    }
+}
