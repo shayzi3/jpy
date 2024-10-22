@@ -1,61 +1,91 @@
 
 import json
 
-from typing import Any     
-from .src.methods import Update     
+from utils import valide_input_data
+from typing import Any  
           
           
 
-class BaseJsonPy:
-     """Its class not required. Parent class
-    
-     """
-     __cache = {}
-     __tablename__ = None
+class JsonPy:
+     __tablename__: str | None = None
+     __path__: str  = 'baser.json'
+     __free__: bool = False
+     
+     __metadata = {}
      
      
-     def __new__(cls, path: str | None = None):
-          if cls == BaseJsonPy:
-               raise TypeError(f"{cls.__name__} its parent class")
+     def __init__(
+          self, 
+          data: dict[str, Any] | None = None
+     ) -> None:
           
-          if cls.__name__ not in cls.__cache:
-               cls.__cache[cls.__name__] = path
-               return f'class {cls.__name__} cached'
-          return super().__new__(cls)
-
+          if data:
+               self + data
      
-     def __init__(self) -> None:
-          self.path = self.__cache[self.__class__.__name__]         
-         
-         
-     def __tablename_or_class(self) -> str:
-          name = self.__class__.__name__
-          if self.__class__.__tablename__:
-               name = self.__class__.__tablename__
+     
+     @classmethod
+     def create(cls) -> None:
+          classes = cls.__subclasses__()
           
+          if not classes:
+               return None
+          
+          for class_ in classes:
+               attributes_class = class_.__annotations__
+               
+               if not attributes_class:
+                    raise TypeError(f"Class {class_.__qualname__} dont have attributes")
+               
+               name = class_.__qualname__
+               if class_.__tablename__:
+                    name = class_.__tablename__
+                    
+               if class_.__free__:
+                    cls.__metadata['__free'] = {
+                         key: None for key in attributes_class.keys()
+                    }
+                    continue
+                    
+               cls.__metadata[name] = {
+                    '__types': [key for key in attributes_class.keys()],
+                    'data': []
+               }
+          return cls.__save(cls.__metadata)               
+               
+         
+     @classmethod  
+     def __tablename_or_class(cls) -> str:
+          name = cls.__name__
+          if cls.__tablename__:
+               name = cls.__tablename__
+               
+          if cls.__free__:
+               name = '__free'
+               
           return name
      
      
-     def __save(self, data: dict[str, Any]) -> bool:
-          with open(self.path, 'w') as file:
+     @classmethod
+     def __save(cls, data: dict[str, Any]) -> None:
+          with open(cls.__path__, 'w') as file:
                json.dump(data, file, indent=4)
-          return True
      
      
-     def __len__(self) -> int:
+     @classmethod
+     def __len__(cls) -> int:
           """Get len your data
 
           Returns:
              int
           """
-          name = self.__tablename_or_class()
-          
-          with open(self.path, 'r') as file:
+          name = cls.__tablename_or_class()
+          with open(cls.__path__, 'r') as file:
                data = json.loads(file.read())[name]['data']
           return len(data)
           
-          
-     def __add__(self, obj: dict[str, Any]) -> None:
+       
+     @classmethod   
+     def __add__(cls, obj: dict[str, Any]) -> None:
           """Add new data in json moodel
 
           Args:
@@ -66,107 +96,30 @@ class BaseJsonPy:
               ValueError: Required argument ... for table ...
               ValueError: Argument ... not exists
           """
-          name = self.__tablename_or_class()
+          if not isinstance(obj, dict):
+               raise TypeError("If you wnt add new data, you must use dict")
 
-          with open(self.path, 'r') as file:
+          name = cls.__tablename_or_class()
+          with open(cls.__path__, 'r') as file:
                data: dict = json.loads(file.read())
-            
-          if name not in data.keys():   
-               raise ValueError(f"Table {name} not exists")
+               
+          valide_input_data(
+               data=obj,
+               json_file=data,
+               table_name=name
+          )  
+          if name != '__free':
+               data[name]['data'].append(obj)
           
-          types = data[name]['__types']
-          for key in types:
-               if key not in obj.keys():
-                    raise ValueError(f"Required argument {key} for table {name}")
-               
-          for key in obj.keys():
-               if key not in types:
-                    raise ValueError(f"Argument {key} not exists")
-               
-          data[name]['data'].append(obj)
-          self.__save(data)
+          else:
+               for key, value in obj.items():
+                    data['__free'][key] = value
+                    
+          return cls.__save(data)
           
           
      def __repr__(self) -> str:
-          return f'jpy_model <class={self.__class__.__name__} path={self.__cache[self.__class__.__name__]}>'
-
-
-
-class JsonPy:
-     __slots__ = (
-          "_metadata",
-          "_path",
-     )
-     
-     def __init__(
-          self, 
-          *args: type, 
-          path: str = 'baser.json',
-          free_arguments: list[str] | type | None = None
-     ) -> None:
-          
-          self._metadata = {}
-          self._path = path
-          
-          for class_ in args:
-               attributes_class = class_.__annotations__
-               
-               if not attributes_class:
-                    raise TypeError(f"Class {class_.__qualname__} dont have any annotations")
-               
-               name = class_.__qualname__
-               if class_.__tablename__:
-                    name = class_.__tablename__
-               
-                    
-               self._metadata[name] = {
-                    '__types': [key for key in attributes_class.keys()],
-                    'data': []
-               }
-               class_.__new__(class_, self._path)
-
-               
-          if free_arguments:
-               if isinstance(free_arguments, list):
-                    iter_ = free_arguments
-                    
-               elif isinstance(free_arguments, type):
-                    iter_ = free_arguments.__annotations__.keys()
-                    
-               else:
-                    raise ValueError("wrong type data in free_argument must be list[str] | type | None")
-               self._metadata.update({'__free': {f: None for f in iter_}}) 
-                    
-               
-     def create(self) -> None:
-          with open(self._path, 'w') as file:
-               json.dump(self._metadata, file, indent=4)
-               
-               
-     def update(
-          self,
-          table: str | object | None = None
-     ) -> Update:
-          if not table or table == '__free':
-               return Update(
-                    table='__free',
-                    path=self._path
-               )
-               
-          if isinstance(table, type):
-               name = table.__qualname__
-               if '__tablename__' in table.__dict__:
-                    name = table.__tablename__
-               table = name
-               
-          if table not in self._metadata.keys():
-               raise ValueError(f"Not found table {table}")
-               
-          return Update(
-               table=table,
-               path=self._path
-          )
-          
-     
-     def __repr__(self) -> str:
-          return f"JsonPy <path=/{self.__path}>"
+          if self.__class__.__name__ in self.__cache:
+               return f'jpy_model <class={self.__class__.__name__} path={self.__cache[self.__class__.__name__]}>'
+          else:
+               return f'class <{self.__class__.__name__}>'

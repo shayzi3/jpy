@@ -1,0 +1,21 @@
+{
+    "user": {
+        "__types": [
+            "id",
+            "username"
+        ],
+        "data": []
+    },
+    "item": {
+        "__types": [
+            "id",
+            "name",
+            "price"
+        ],
+        "data": []
+    },
+    "__free": {
+        "money": 500,
+        "level": 1000.8
+    }
+}
