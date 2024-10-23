@@ -12,10 +12,8 @@
             "name",
             "price"
         ],
-        "data": []
-    },
-    "__free": {
-        "money": 500,
-        "level": 1000.8
+        "data": [],
+        "money": null,
+        "level": null
     }
 }

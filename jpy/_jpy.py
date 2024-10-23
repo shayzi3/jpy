@@ -1,9 +1,12 @@
 
 import json
+import os
 
-from utils import valide_input_data
+
 from typing import Any  
-          
+from jpy.utils import valide_input_data
+
+
           
 
 class JsonPy:
@@ -11,16 +14,22 @@ class JsonPy:
      __path__: str  = 'baser.json'
      __free__: bool = False
      
-     __metadata = {}
+     __json = {}
      
      
      def __init__(
           self, 
           data: dict[str, Any] | None = None
      ) -> None:
+          if not os.path.exists(self.__path__):
+               open(self.__path__, 'w').close()
           
-          if data:
-               self + data
+          with open(self.__path__, 'r') as file:
+               read_file = file.read()
+               if read_file:
+                    self.__class__.__json = json.loads(file.read())
+               
+          if data: self + data
      
      
      @classmethod
@@ -30,6 +39,7 @@ class JsonPy:
           if not classes:
                return None
           
+          metadata = {}
           for class_ in classes:
                attributes_class = class_.__annotations__
                
@@ -41,16 +51,21 @@ class JsonPy:
                     name = class_.__tablename__
                     
                if class_.__free__:
-                    cls.__metadata['__free'] = {
-                         key: None for key in attributes_class.keys()
-                    }
+                    if not cls.__json.get(name):
+                         metadata[name] = {}
+                         
+                    metadata[name].update(
+                         {
+                              key: None for key in attributes_class.keys()
+                         }
+                    )
                     continue
                     
-               cls.__metadata[name] = {
+               metadata[name] = {
                     '__types': [key for key in attributes_class.keys()],
                     'data': []
                }
-          return cls.__save(cls.__metadata)               
+          return cls.__save(metadata)               
                
          
      @classmethod  
@@ -58,10 +73,6 @@ class JsonPy:
           name = cls.__name__
           if cls.__tablename__:
                name = cls.__tablename__
-               
-          if cls.__free__:
-               name = '__free'
-               
           return name
      
      
@@ -97,29 +108,29 @@ class JsonPy:
               ValueError: Argument ... not exists
           """
           if not isinstance(obj, dict):
-               raise TypeError("If you wnt add new data, you must use dict")
+               raise TypeError("If you want add new data, you must use dict")
 
           name = cls.__tablename_or_class()
-          with open(cls.__path__, 'r') as file:
-               data: dict = json.loads(file.read())
                
           valide_input_data(
                data=obj,
-               json_file=data,
-               table_name=name
+               json_file=cls.__json,
+               table_name=name,
+               free=cls.__free__
           )  
-          if name != '__free':
-               data[name]['data'].append(obj)
+          if not cls.__free__:
+               cls.__json[name]['data'].append(obj)
           
           else:
                for key, value in obj.items():
-                    data['__free'][key] = value
-                    
-          return cls.__save(data)
+                    cls.__json[name][key] = value
+          return cls.__save(cls.__json)
           
           
-     def __repr__(self) -> str:
-          if self.__class__.__name__ in self.__cache:
-               return f'jpy_model <class={self.__class__.__name__} path={self.__cache[self.__class__.__name__]}>'
-          else:
-               return f'class <{self.__class__.__name__}>'
+     @classmethod
+     def __repr__(cls) -> str:
+          name = cls.__tablename_or_class()
+          
+          if name in cls.__json.keys():
+               return f'jpy_model <class={cls.__name__} table={name} path={cls.__path__}>'
+          return cls.__name__
