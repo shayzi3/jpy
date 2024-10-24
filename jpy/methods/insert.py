@@ -2,6 +2,7 @@
 
 import json
 import os
+import time
 
 from jpy.utils import valide_input_data
 from typing import Any
@@ -27,16 +28,15 @@ class Insert:
           
 
      
-     def __save(self, data: dict[str, Any]) -> bool:
+     def __save(self, data: dict[str, Any]) -> None:
           if not os.path.exists(self._path):
                raise FileNotFoundError(f"{self._path} not exists")
           
           with open(self._path, 'w') as file:
-               json.dump(data, file, indent=4)
-          return True
-            
+               json.dump(data, file, indent=4)    
      
-     def values(self, **kwargs) -> bool:
+     
+     def values(self, **kwargs) -> None:
           valide_input_data(
                data=kwargs,
                json_file=self._json_obj,
@@ -52,9 +52,7 @@ class Insert:
                          }
                     }
                )
-               
           else:
                for key, value in kwargs.items():
                     self._json_obj[self._table][key] = value
-          return self.__save(self._json_obj)
-          
+          return self.__save(self._json_obj)          

@@ -5,9 +5,45 @@
             "username"
         ],
         "data": {
-            "500": {
-                "id": 500,
+            "12398287": {
+                "id": 12398287,
+                "username": "Mikeee"
+            },
+            "1239": {
+                "id": 1239,
                 "username": "Vlad"
+            },
+            "1": {
+                "id": 1,
+                "username": "Victor"
+            },
+            "190": {
+                "id": 190,
+                "username": "Bibom"
+            },
+            "156": {
+                "id": 156,
+                "username": "Bom"
+            },
+            "9090990": {
+                "id": 9090990,
+                "username": "Babom"
+            },
+            "909": {
+                "id": 909,
+                "username": "Miner"
+            },
+            "910": {
+                "id": 910,
+                "username": "Minor"
+            },
+            "777": {
+                "id": 777,
+                "username": "My"
+            },
+            "77": {
+                "id": 77,
+                "username": "My_penis"
             }
         }
     },
@@ -17,10 +53,16 @@
             "name",
             "price"
         ],
-        "data": {}
+        "data": {
+            "likee": {
+                "id": 123,
+                "name": "likee",
+                "price": 5.55
+            }
+        }
     },
     "Free": {
-        "money": 10,
-        "level": null
+        "money": 19,
+        "level": 0.1
     }
 }

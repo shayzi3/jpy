@@ -35,20 +35,29 @@ class Free(Base):
      level: float
      
 
-user, free = User(), Free()
-     
-user.update(
-     values = {
-          'id': 500,
-          'username': 'Vlad'
+  
+  
+Free().insert(
+     {'money': 19, 'level': 0.1}
+)     
+
+Item().insert(
+     {
+          'id': 123,
+          'name': 'likee',
+          'price': 5.55
      }
 )
-free.update(
-     values = {'money': 10}
+
+User().insert(
+     {
+          'id': 77,
+          'username': 'My_penis'
+     }
 )
 
      
-     
+ 
 # User() + {
 #      'id': 1,
 #      'username': 'Vlad'

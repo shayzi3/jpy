@@ -18,19 +18,14 @@ class JsonPy:
      __json = {}
      
      
-     def __init__(
-          self, 
-          data: dict[str, Any] | None = None
-     ) -> None:
+     def __init__(self) -> None:
           if not os.path.exists(self.__path__):
                open(self.__path__, 'w').close()
           
           with open(self.__path__, 'r') as file:
                read_file = file.read()
                if read_file:
-                    self.__class__.__json = json.loads(read_file)
-               
-          if data: self + data
+                    self.__class__.__json = json.loads(read_file)     
      
      
      @classmethod
@@ -70,7 +65,7 @@ class JsonPy:
      
      
      @classmethod
-     def update(
+     def insert(
           cls,
           values: dict[str, Any]
      ) -> None:
@@ -87,8 +82,7 @@ class JsonPy:
                path=cls.__path__,
                free=cls.__free__,
                primary=cls.__primary__
-          ).values(**values)
-          
+          ).values(**values)          
           
           
      @classmethod
@@ -112,7 +106,7 @@ class JsonPy:
      @classmethod
      def __save(cls, data: dict[str, Any]) -> None:
           with open(cls.__path__, 'w') as file:
-               json.dump(data, file, indent=4)
+               file.write(json.dumps(data, indent=4))
      
      
      @classmethod
@@ -130,15 +124,7 @@ class JsonPy:
        
      @classmethod   
      def __add__(cls, obj: dict[str, Any]) -> None:
-          name = cls.__tablename_or_class()
-          
-          return Insert(
-               table=name,
-               json_obj=cls.__json,
-               free=cls.__free__,
-               path=cls.__path__,
-               primary=cls.__primary__
-          ).values(**obj)
+          return cls.insert(values=obj)
           
           
      @classmethod
