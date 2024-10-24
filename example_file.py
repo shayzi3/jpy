@@ -5,12 +5,13 @@ from jpy import JsonPy
 
 
 class Base(JsonPy):
-     __path__ = 'other.json'
+     __path__ = 'example.json'
      
     
      
 class User(Base):
      __tablename__ = 'user'
+     __primary__ = 'id'
      
      id: int
      username: str
@@ -19,6 +20,7 @@ class User(Base):
      
 class Item(Base):
      __tablename__ = 'item'
+     __primary__ = 'name'
      
      id: int
      name: str
@@ -27,12 +29,24 @@ class Item(Base):
 
 
 class Free(Base):
-     __tablename__ = 'item'
      __free__ = True
      
      money: int
      level: float
      
+
+user, free = User(), Free()
+     
+user.update(
+     values = {
+          'id': 500,
+          'username': 'Vlad'
+     }
+)
+free.update(
+     values = {'money': 10}
+)
+
      
      
 # User() + {
@@ -52,5 +66,5 @@ class Free(Base):
 # }
      
      
-if __name__ == '__main__':
-     Base().create()
+# if __name__ == '__main__':
+#      Base().create()

@@ -4,7 +4,7 @@ import os
 
 
 from typing import Any  
-from jpy.utils import valide_input_data
+from jpy.methods import Insert
 
 
           
@@ -13,6 +13,7 @@ class JsonPy:
      __tablename__: str | None = None
      __path__: str  = 'baser.json'
      __free__: bool = False
+     __primary__: str | None = None
      
      __json = {}
      
@@ -27,7 +28,7 @@ class JsonPy:
           with open(self.__path__, 'r') as file:
                read_file = file.read()
                if read_file:
-                    self.__class__.__json = json.loads(file.read())
+                    self.__class__.__json = json.loads(read_file)
                
           if data: self + data
      
@@ -51,7 +52,7 @@ class JsonPy:
                     name = class_.__tablename__
                     
                if class_.__free__:
-                    if not cls.__json.get(name):
+                    if not metadata.get(name):
                          metadata[name] = {}
                          
                     metadata[name].update(
@@ -63,9 +64,41 @@ class JsonPy:
                     
                metadata[name] = {
                     '__types': [key for key in attributes_class.keys()],
-                    'data': []
+                    'data': {}
                }
-          return cls.__save(metadata)               
+          return cls.__save(metadata)    
+     
+     
+     @classmethod
+     def update(
+          cls,
+          values: dict[str, Any]
+     ) -> None:
+          if not cls.__primary__ and not cls.__free__:
+               raise TypeError("__primary__ required argument")
+
+          if not values:
+               return None
+          
+          name = cls.__tablename_or_class()
+          return Insert(
+               table=name,
+               json_obj=cls.__json,
+               path=cls.__path__,
+               free=cls.__free__,
+               primary=cls.__primary__
+          ).values(**values)
+          
+          
+          
+     @classmethod
+     def select(cls) -> None:
+          ...
+          
+          
+     @classmethod
+     def delete(cls) -> None:
+          ...   
                
          
      @classmethod  
@@ -97,34 +130,15 @@ class JsonPy:
        
      @classmethod   
      def __add__(cls, obj: dict[str, Any]) -> None:
-          """Add new data in json moodel
-
-          Args:
-              obj (dict[str, Any]): Arguments from user. Class() + {'id': 1, 'name': 'John'}
-
-          Raises:
-              ValueError: Table ... not exists
-              ValueError: Required argument ... for table ...
-              ValueError: Argument ... not exists
-          """
-          if not isinstance(obj, dict):
-               raise TypeError("If you want add new data, you must use dict")
-
           name = cls.__tablename_or_class()
-               
-          valide_input_data(
-               data=obj,
-               json_file=cls.__json,
-               table_name=name,
-               free=cls.__free__
-          )  
-          if not cls.__free__:
-               cls.__json[name]['data'].append(obj)
           
-          else:
-               for key, value in obj.items():
-                    cls.__json[name][key] = value
-          return cls.__save(cls.__json)
+          return Insert(
+               table=name,
+               json_obj=cls.__json,
+               free=cls.__free__,
+               path=cls.__path__,
+               primary=cls.__primary__
+          ).values(**obj)
           
           
      @classmethod

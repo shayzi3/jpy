@@ -4,7 +4,12 @@
             "id",
             "username"
         ],
-        "data": []
+        "data": {
+            "500": {
+                "id": 500,
+                "username": "Vlad"
+            }
+        }
     },
     "item": {
         "__types": [
@@ -12,8 +17,10 @@
             "name",
             "price"
         ],
-        "data": [],
-        "money": null,
+        "data": {}
+    },
+    "Free": {
+        "money": 10,
         "level": null
     }
 }

@@ -1,12 +1,6 @@
 
-
-from .update import Update
-from .select import Select
-from .delete import Delete
-
+from .insert import Insert
 
 __all__ = [
-     "Update",
-     "Select",
-     "Delete"
+     "Insert"
 ]
