@@ -3,12 +3,11 @@ import json
 import os
 
 
-from typing import Any  
-from jpy.methods import Insert
+from typing import Any
+from jpy.methods import Insert, Select
 
 
           
-
 class JsonPy:
      __tablename__: str | None = None
      __path__: str  = 'baser.json'
@@ -31,7 +30,6 @@ class JsonPy:
      @classmethod
      def create(cls) -> None:
           classes = cls.__subclasses__()
-          
           if not classes:
                return None
           
@@ -59,19 +57,13 @@ class JsonPy:
                     
                metadata[name] = {
                     '__types': [key for key in attributes_class.keys()],
-                    'data': {}
+                    'data': {} if class_.__primary__ else []
                }
           return cls.__save(metadata)    
      
      
      @classmethod
-     def insert(
-          cls,
-          values: dict[str, Any]
-     ) -> None:
-          if not cls.__primary__ and not cls.__free__:
-               raise TypeError("__primary__ required argument")
-
+     def insert(cls, values: dict[str, Any]) -> None:
           if not values:
                return None
           
@@ -82,12 +74,30 @@ class JsonPy:
                path=cls.__path__,
                free=cls.__free__,
                primary=cls.__primary__
-          ).values(**values)          
+          ).values(**values)  
           
           
      @classmethod
-     def select(cls) -> None:
+     def select(
+          cls,
+          where: dict[str, Any] = {},
+          values: list[str] | tuple[str] = []
+     ) -> None:
+          name = cls.__tablename_or_class()
+          return Select(
+               table=name,
+               json_obj=cls.__json,
+               primary=cls.__primary__,
+               path=cls.__path__,
+               free=cls.__free__
+          ).where(**where).values(values)
+          
+          
+          
+     @classmethod
+     def update(cls) -> None:
           ...
+          
           
           
      @classmethod
@@ -133,4 +143,4 @@ class JsonPy:
           
           if name in cls.__json.keys():
                return f'jpy_model <class={cls.__name__} table={name} path={cls.__path__}>'
-          return cls.__name__
+          return f'class <{cls.__name__}>'

@@ -14,13 +14,11 @@ class User(Base):
      __primary__ = 'id'
      
      id: int
-     username: str
-     
+     username: str 
      
      
 class Item(Base):
      __tablename__ = 'item'
-     __primary__ = 'name'
      
      id: int
      name: str
@@ -30,31 +28,37 @@ class Item(Base):
 
 class Free(Base):
      __free__ = True
+     __tablename__ = 'user'
      
      money: int
      level: float
      
 
-  
-  
-Free().insert(
-     {'money': 19, 'level': 0.1}
-)     
 
-Item().insert(
-     {
-          'id': 123,
-          'name': 'likee',
-          'price': 5.55
-     }
-)
+  
+# Free().insert(
+#      {'money': 1}
+# )     
 
-User().insert(
-     {
-          'id': 77,
-          'username': 'My_penis'
-     }
-)
+# Item().insert(
+#      {
+#           'id': 12,
+#           'name': 'apple',
+#           'price': 3.2
+#      }
+# )
+# User().insert(
+#      {
+#           'id': 13,
+#           'username': 'micro'
+#      }
+# )
+print(Free().select())
+# result = User().select(
+#      values = ('id',)
+# )
+# print(result)
+
 
      
  

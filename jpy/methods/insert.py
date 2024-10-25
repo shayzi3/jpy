@@ -2,15 +2,22 @@
 
 import json
 import os
-import time
 
-from jpy.utils import valide_input_data
+from jpy.utils import valide_input_data, Mode
 from typing import Any
 
 
 
-
 class Insert:
+     __slots__ = (
+          "_table",
+          "_json_obj",
+          "_free",
+          "_path",
+          "_primary"
+     )
+     
+     
      def __init__(
           self,
           table: str,
@@ -28,13 +35,13 @@ class Insert:
           
 
      
-     def __save(self, data: dict[str, Any]) -> None:
+     def __save(self) -> None:
           if not os.path.exists(self._path):
                raise FileNotFoundError(f"{self._path} not exists")
           
           with open(self._path, 'w') as file:
-               json.dump(data, file, indent=4)    
-     
+               json.dump(self._json_obj, file, indent=4)
+
      
      def values(self, **kwargs) -> None:
           valide_input_data(
@@ -42,17 +49,25 @@ class Insert:
                json_file=self._json_obj,
                table_name=self._table,
                free=self._free,
-               primary=self._primary
+               primary=self._primary,
+               mode=Mode.INSERT
           )
           if not self._free:
-               self._json_obj[self._table]['data'].update(
-                    {
-                         kwargs[self._primary]: {
+               if self._primary:
+                    self._json_obj[self._table]['data'].update(
+                         {
+                              kwargs[self._primary]: {
+                                   key: value for key, value in kwargs.items()
+                              }
+                         }
+                    )
+               else:
+                    self._json_obj[self._table]['data'].append(
+                         {
                               key: value for key, value in kwargs.items()
                          }
-                    }
-               )
+                    )
           else:
                for key, value in kwargs.items():
                     self._json_obj[self._table][key] = value
-          return self.__save(self._json_obj)          
+          return self.__save()   

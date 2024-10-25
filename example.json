@@ -5,47 +5,13 @@
             "username"
         ],
         "data": {
-            "12398287": {
-                "id": 12398287,
-                "username": "Mikeee"
-            },
-            "1239": {
-                "id": 1239,
-                "username": "Vlad"
-            },
-            "1": {
-                "id": 1,
-                "username": "Victor"
-            },
-            "190": {
-                "id": 190,
-                "username": "Bibom"
-            },
-            "156": {
-                "id": 156,
-                "username": "Bom"
-            },
-            "9090990": {
-                "id": 9090990,
-                "username": "Babom"
-            },
-            "909": {
-                "id": 909,
-                "username": "Miner"
-            },
-            "910": {
-                "id": 910,
-                "username": "Minor"
-            },
-            "777": {
-                "id": 777,
-                "username": "My"
-            },
-            "77": {
-                "id": 77,
-                "username": "My_penis"
+            "13": {
+                "id": 13,
+                "username": "micro"
             }
-        }
+        },
+        "money": 1,
+        "level": 0.4
     },
     "item": {
         "__types": [
@@ -53,16 +19,12 @@
             "name",
             "price"
         ],
-        "data": {
-            "likee": {
-                "id": 123,
-                "name": "likee",
-                "price": 5.55
+        "data": [
+            {
+                "id": 12,
+                "name": "apple",
+                "price": 3.2
             }
-        }
-    },
-    "Free": {
-        "money": 19,
-        "level": 0.1
+        ]
     }
 }
