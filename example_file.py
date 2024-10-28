@@ -5,7 +5,7 @@ from jpy import JsonPy
 
 
 class Base(JsonPy):
-     __path__ = 'example.json'
+     __path_to_json__ = 'example.json'
      
     
      
@@ -14,7 +14,9 @@ class User(Base):
      __primary__ = 'id'
      
      id: int
-     username: str 
+     username: str
+     money: int
+     level: float 
      
      
 class Item(Base):
@@ -34,31 +36,38 @@ class Free(Base):
      level: float
      
 
-
   
 # Free().insert(
-#      {'money': 1}
+#      {'money': 1, 'level': 122}
 # )     
 
-# Item().insert(
+# item = Item.insert(
 #      {
-#           'id': 12,
-#           'name': 'apple',
-#           'price': 3.2
+#           'id': 1917,
+#           'name': 'mikle',
+#           'price': 31
 #      }
 # )
+# print(item.id, item.name, item.price)
 # User().insert(
 #      {
-#           'id': 13,
-#           'username': 'micro'
+#           'id': 3,
+#           'username': 'ben',
+#           'money': 555,
+#           'level': 135
 #      }
 # )
-print(Free().select())
-# result = User().select(
-#      values = ('id',)
-# )
-# print(result)
+# print(Free.select())
 
+
+# f = Free.select(
+#      values = ['level']
+# )
+# print(f.level)
+
+result = Item.select(
+)
+print(result)
 
      
  
@@ -77,7 +86,5 @@ print(Free().select())
 # Free() + {
 #      'level': 101
 # }
-     
-     
 # if __name__ == '__main__':
 #      Base().create()

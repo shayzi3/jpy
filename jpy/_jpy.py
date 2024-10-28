@@ -1,16 +1,20 @@
-
 import json
 import os
 
 
 from typing import Any
 from jpy.methods import Insert, Select
+from jpy.utils.exception import (
+     FileNotValide,
+     ClassWithoutColumns,
+     CannotCreateTable
+)
 
 
           
 class JsonPy:
      __tablename__: str | None = None
-     __path__: str  = 'baser.json'
+     __path_to_json__: str  = 'baser.json'
      __free__: bool = False
      __primary__: str | None = None
      
@@ -18,10 +22,13 @@ class JsonPy:
      
      
      def __init__(self) -> None:
-          if not os.path.exists(self.__path__):
-               open(self.__path__, 'w').close()
+          if self.__path_to_json__.split('.')[-1] != 'json':
+               raise FileNotValide('Path to json file must end with .json')
+                    
+          if not os.path.exists(self.__path_to_json__):
+               open(self.__path_to_json__, 'w').close()
           
-          with open(self.__path__, 'r') as file:
+          with open(self.__path_to_json__, 'r') as file:
                read_file = file.read()
                if read_file:
                     self.__class__.__json = json.loads(read_file)     
@@ -33,12 +40,15 @@ class JsonPy:
           if not classes:
                return None
           
+          if cls.__base__ != JsonPy:
+               raise CannotCreateTable(f"Class {cls.__name__} is not a subclass of JsonPy")
+
           metadata = {}
           for class_ in classes:
                attributes_class = class_.__annotations__
                
                if not attributes_class:
-                    raise TypeError(f"Class {class_.__qualname__} dont have attributes")
+                    raise ClassWithoutColumns(f"Class {class_.__qualname__} dont have columns.")
                
                name = class_.__qualname__
                if class_.__tablename__:
@@ -63,18 +73,22 @@ class JsonPy:
      
      
      @classmethod
-     def insert(cls, values: dict[str, Any]) -> None:
+     def insert(cls, values: dict[str, Any]) -> type:
           if not values:
                return None
           
+          if not cls.__json: 
+               cls()
+          
           name = cls.__tablename_or_class()
-          return Insert(
+          Insert(
                table=name,
                json_obj=cls.__json,
-               path=cls.__path__,
+               path=cls.__path_to_json__,
                free=cls.__free__,
                primary=cls.__primary__
           ).values(**values)  
+          return type(cls.__name__, (), values)
           
           
      @classmethod
@@ -82,15 +96,23 @@ class JsonPy:
           cls,
           where: dict[str, Any] = {},
           values: list[str] | tuple[str] = []
-     ) -> None:
+     ) -> type | None | list[dict[str, Any]]:
           name = cls.__tablename_or_class()
-          return Select(
+          
+          if not cls.__json: 
+               cls()
+               
+          select_data = Select(
                table=name,
                json_obj=cls.__json,
                primary=cls.__primary__,
-               path=cls.__path__,
+               path=cls.__path_to_json__,
                free=cls.__free__
           ).where(**where).values(values)
+          
+          if isinstance(select_data, dict):
+               return type(cls.__name__, (), select_data)
+          return select_data
           
           
           
@@ -115,7 +137,7 @@ class JsonPy:
      
      @classmethod
      def __save(cls, data: dict[str, Any]) -> None:
-          with open(cls.__path__, 'w') as file:
+          with open(cls.__path_to_json__, 'w') as file:
                file.write(json.dumps(data, indent=4))
      
      
@@ -127,7 +149,7 @@ class JsonPy:
              int
           """
           name = cls.__tablename_or_class()
-          with open(cls.__path__, 'r') as file:
+          with open(cls.__path_to_json__, 'r') as file:
                data = json.loads(file.read())[name]['data']
           return len(data)
           
@@ -136,11 +158,13 @@ class JsonPy:
      def __add__(cls, obj: dict[str, Any]) -> None:
           return cls.insert(values=obj)
           
-          
-     @classmethod
+         
+     @classmethod 
      def __repr__(cls) -> str:
           name = cls.__tablename_or_class()
           
-          if name in cls.__json.keys():
-               return f'jpy_model <class={cls.__name__} table={name} path={cls.__path__}>'
-          return f'class <{cls.__name__}>'
+          if name in cls.__json:
+               return f'json model <class={cls.__name__} tablename={name} path={cls.__path_to_json__}>'
+          return f'class @{cls.__name__}'
+          
+          
