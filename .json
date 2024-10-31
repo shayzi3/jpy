@@ -1,0 +1,11 @@
+{
+    "Item": {
+        "columns": [
+            "id",
+            "name",
+            "price",
+            "quality"
+        ],
+        "data": []
+    }
+}

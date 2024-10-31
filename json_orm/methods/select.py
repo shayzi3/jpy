@@ -1,7 +1,7 @@
 
 
 from typing import Any, Self
-from jpy.utils import valide_input_data, BaseClass
+from json_orm.utils import valide_input_data, BaseClass
 
 
 

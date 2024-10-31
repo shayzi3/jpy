@@ -1,90 +1,73 @@
 
-from jpy import JsonPy
+from json_orm import JsonOrm, Column
 
 
 
 
-class Base(JsonPy):
-     __path_to_json__ = 'example.json'
+class User(JsonOrm):
+     id: Column
+     name: Column
      
-    
+     class Data:
+          tablename = 'user'
+          primary = 'id'
+          free = False
+          
+          
+class Item(JsonOrm):
+     id: Column
+     name: Column
+     price: Column
+     quality: Column
      
-class User(Base):
-     __tablename__ = 'user'
-     __primary__ = 'id'
+     class Data:
+          path = '.json'
+          
+          
+        
+if __name__ == '__main__':
+     JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
+     print(User.__dict__)
+     print(Item.__dict__)
      
-     id: int
-     username: str
-     money: int
-     level: float 
+     #User - {
+          # 'id': None, 
+          # 'name': None, 
+          # 'metadata': {
+               # 'path': 'base.json', 
+               # 'tablename': 'user', 
+               # 'free': None, 
+               # 'primary': 'id', 
+               # 'columns': ['id', 'name']
+               #}, 
+               # '__module__': 'json_orm.utils.abstract', 
+               # '__doc__': None
+     # }
      
      
-class Item(Base):
-     __tablename__ = 'item'
+     # Item - {
+          # 'id': None, 
+          # 'name': None, 
+          # 'price': None, 
+          # 'quality': None, 
+          # 'metadata': {
+               # 'path': '.json', 
+               # 'tablename': 'Item', 
+               # 'free': None, 
+               # 'primary': None, 
+               # 'columns': ['id', 'name', 'price', 'quality']
+          # }, 
+          # '__module__': 'json_orm.utils.abstract', 
+          # '__doc__': None
+     # }
      
-     id: int
-     name: str
-     price: float
-     
-
-
-class Free(Base):
-     __free__ = True
-     __tablename__ = 'user'
-     
-     money: int
-     level: float
-     
-
-  
-# Free().insert(
-#      {'money': 1, 'level': 122}
-# )     
-
-# item = Item.insert(
-#      {
-#           'id': 1917,
-#           'name': 'mikle',
-#           'price': 31
-#      }
-# )
-# print(item.id, item.name, item.price)
-# User().insert(
-#      {
-#           'id': 3,
-#           'username': 'ben',
-#           'money': 555,
-#           'level': 135
-#      }
-# )
-# print(Free.select())
-
-
-# f = Free.select(
-#      values = ['level']
-# )
-# print(f.level)
-
-result = Item.select(
-)
-print(result)
+     # user = User(id=5, name='Vlad')
+     # print(user.id, user.name) - 5 Vlad
 
      
- 
-# User() + {
-#      'id': 1,
-#      'username': 'Vlad'
-# }
-
-# Item(
-#      {
-#           'id': 5, 
-#           'name': 10, 
-#           'price': 5.0
-#      }
-# )
-# Free() + {
-#      'level': 101
-# }
-# if __name__ == '__main__':
-#      Base().create()
+     
+# How look insert, delete, update, select methods
+# Insert(Table).values(kwargs)
+# Delete(Table).where(kwargs)
+# Select(Table).where(kwargs).values(args: str)
+# Update(Table).where(kwargs).values(args: str)

@@ -1,0 +1,9 @@
+{
+    "user": {
+        "columns": [
+            "id",
+            "name"
+        ],
+        "data": {}
+    }
+}

@@ -3,7 +3,7 @@
 import json
 import os
 
-from jpy.utils import valide_input_data, Mode
+from json_orm.utils import valide_input_data, Mode
 from typing import Any
 
 
