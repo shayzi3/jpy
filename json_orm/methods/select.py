@@ -1,81 +1,117 @@
+import json
+import os
 
-from typing_extensions import Self, Any
-from json_orm.utils import _valide_input_data, BaseClass
+from typing_extensions import (
+     Self, 
+     Any, 
+     Generic, 
+     TypeVar
+)
+from json_orm.utils import (
+     _valide_input_data, 
+     BaseClass, 
+     MetaData
+)
+from json_orm.utils.exception import (
+     NotFoundMetadata, 
+     FileNotFound
+)
 
 
+__all__ = (
+     "Select",
+)
+ClassType = TypeVar("ClassType")
 
-class Select(BaseClass):
+
+class Select(BaseClass, Generic[ClassType]):
      __slots__ = (
-          "_table",
-          "_json_obj",
-          "_free",
-          "_path",
-          "_primary",
-          "__where_values"
+          "__table",
+          "__free",
+          "__path",
+          "__primary",
+          "__where_values",
+          "__tablename",
+          "__json_obj",
+          "__columns",
      )
      
      
-     def __init__(
-          self,
-          table: str,
-          json_obj: dict[str, Any],
-          free: bool,
-          path: str,
-          primary: str
-     ) -> None:
+     def __init__(self, table: ClassType) -> None:
+          dict_type = table.__dict__.get('metadata')
+          if dict_type:
+               type_ = MetaData(**dict_type)
+          else:
+               raise NotFoundMetadata(f"Metadata about class {table.__qualname__} not found.")
           
-          self._table = table
-          self._json_obj = json_obj
-          self._free = free
-          self._path = path
-          self._primary = primary
-          self.__where_values = ()
+          self.__table = table
+          self.__tablename = type_.tablename
+          self.__free = type_.free
+          self.__path = type_.path
+          self.__primary = type_.primary
+          self.__columns = type_.columns
+          self.__where_values = (1,)
           
-          if isinstance(self._primary, int):
-               self._primary = str(self._primary)
+          if isinstance(self.__primary, int):
+               self.__primary = str(self._primary)
+               
+          if not os.path.exists(self.__path):
+               raise FileNotFound(f"Json file {self.__path} not exists")
           
+          with open(self.__path, 'r', encoding='utf-8') as file:
+               self.__json_obj = json.loads(file.read())
+               
+     @property
+     def some_data(self):
+          return self.__where_values
           
-     def validate(self, obj: dict[str, Any]) -> None:
+     def __validate(self, obj: dict[str, Any]) -> None:
           _valide_input_data(
                data=obj,
-               json_file=self._json_obj,
-               table_name=self._table,
-               free=self._free,
-               primary=self._primary
+               json_file=self.__json_obj,
+               table_name=self.__tablename,
+               free=self.__free,
+               columns=self.__columns,
+               primary=self.__primary
           )
           
+     @staticmethod
+     def __list_or_dict(data: dict | list) -> list:
+          if isinstance(data, dict):
+               return [i for i in data.values()]
+          
+          elif isinstance(data, list):
+               return data
+          
                
-     def where(self, **kwargs: dict[str, Any]) -> Self:
+     def where(self, **kwargs) -> Self:
           # Обозначения в self.__where_values
           # пустой tuple - таблица free или в значении ключа data пусто
           # пустой list - данные, которые искал пользователь не нашлись
-          if self._free:
+          if self.__free:
                return self
           
-          data = self._json_obj[self._table]['data']
+          data = self.__json_obj[self.__tablename]['data']
           if not data:
+               self.__where_values = (2,)
                return self
 
           if not kwargs:
-               if isinstance(data, dict):
-                    self.__where_values = [i for i in data.values()]
-               
-               elif isinstance(data, list):
-                    self.__where_values = [i for i in data]
+               self.__where_values = self.__list_or_dict(data)
                return self
 
-          self.validate(kwargs)
+          self.__validate(kwargs)
           if isinstance(data, dict):
-               if self._primary in kwargs.keys():
-                    if isinstance(kwargs[self._primary], int):
-                         kwargs[self._primary] = str(kwargs[self._primary])
+               if self.__primary in kwargs.keys():
+                    if isinstance(kwargs[self.__primary], int):
+                         kwargs[self.__primary] = str(kwargs[self.__primary])
                          
-                    data = {self._primary: data.get(kwargs[self._primary])}
-                    if data[self._primary] is None:
+                    data = {self.__primary: data.get(kwargs[self.__primary])}
+                    if data[self.__primary] is None:
                          self.__where_values = []
                          return self
                     
-                    del kwargs[self._primary]
+                    del kwargs[self.__primary]
                     
                if kwargs:
                     sorting = []
@@ -110,37 +146,37 @@ class Select(BaseClass):
                return self
 
           
-     def values(
-          self, 
-          value_list: list[str] | tuple[str]
-     ) -> list[dict[str, Any]] | dict[str, Any] | None:
-          self.validate(value_list)
-          if self._free:
+     def values(self, *args: str) -> ClassType | list[dict[str, Any]]:
+          self.__validate(args)
+          if self.__free:
                result = {}
-               if not value_list:
-                    res = self._json_obj[self._table]
+               if not args:
+                    res = self.__json_obj[self.__tablename]
                     
                     for key in res.keys():
-                         if key not in ['__types', 'data']:
+                         if key not in ['columns', 'data']:
                               result[key] = res[key]
                else:
-                    for free_key in value_list:
-                         result.update({free_key: self._json_obj[self._table][free_key]})
+                    for free_key in args:
+                         result.update({free_key: self.__json_obj[self.__tablename][free_key]})
                return result
           
-          if not self.__where_values:
+          if 2 in self.__where_values:
                return None
           
+          if 1 in self.__where_values:
+               get = self.__json_obj[self.__tablename]['data']
+               self.__where_values = self.__list_or_dict(get)
+
           result = self.__where_values
-          if value_list:
+          if args:
                result = []
                for data in self.__where_values:
                     beetween = {}
-                    for key in value_list:
+                    for key in args:
                          beetween[key] = data[key]
                     result.append(beetween)      
                       
           if len(result) == 1:
-               return result[0]
+               return self.__table(**result[0])
           return result
-         

@@ -3,7 +3,8 @@ from json_orm import (
      JsonOrm, 
      Column, 
      DataArgs,
-     Insert
+     Insert,
+     Select
 )
 
 
@@ -34,19 +35,27 @@ class Item(JsonOrm):
         
 if __name__ == '__main__':
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
-     user = Insert(User).values(
-          id=555,
-          name='my'
-     )
-     print(user.name, user.id)
+     # user = Insert(User).values(
+     #      id=555,
+     #      name='my'
+     # )
+     # print(user.name, user.id)
 
-     item = Insert(Item).values(
-          id=123,
-          name='MY',
-          price=100.0,
-          quality=10
-     )
-     print(item.id, item.name, item.price, item.quality)
+     # item = Insert(Item).values(
+     #      id=123,
+     #      name='MY',
+     #      price=100.0,
+     #      quality=10
+     # )
+     item = Select(Item).where(quality=10).values()
+     if isinstance(item, list):
+          print(item)
+     else:
+          print(item.name, item.id)
+          
+     user = Select(User).values()
+     print(user)
+     # print(item.id, item.name, item.price, item.quality)
      # print(User.__dict__)
      # print(Item.__dict__)
      
