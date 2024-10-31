@@ -1,73 +1,91 @@
-
-
 import json
 import os
 
-from json_orm.utils import valide_input_data, Mode
-from typing import Any
+
+from typing import Any, TypeVar, Generic
+from json_orm.utils import (
+     _valide_input_data, 
+     Mode, 
+     MetaData
+)
+from json_orm.utils.exception import (
+     FileNotFound,
+     NotFoundMetadata
+)
 
 
+__all__ = (
+     "Insert",
+)
 
-class Insert:
+ClassType = TypeVar('ClassType')
+
+
+class Insert(Generic[ClassType]):
      __slots__ = (
-          "_table",
-          "_json_obj",
-          "_free",
-          "_path",
-          "_primary"
+          "__tablename",
+          "__free",
+          "__path",
+          "__primary",
+          "__columns",
+          "__json_obj",
+          "__table",
      )
      
      
-     def __init__(
-          self,
-          table: str,
-          json_obj: dict[str, Any],
-          free: bool,
-          path: str,
-          primary: str
-     ) -> None:
+     def __init__(self, table: ClassType):
+          dict_type = table.__dict__.get('metadata')
+          if dict_type:
+               type_ = MetaData(**dict_type)
+          else:
+               raise NotFoundMetadata(f"Metadata about class {self.__qualname__} not found.")
           
-          self._table = table
-          self._json_obj = json_obj
-          self._free = free
-          self._path = path
-          self._primary = primary
+          self.__table = table
+          self.__tablename = type_.tablename
+          self.__free = type_.free
+          self.__path = type_.path
+          self.__primary = type_.primary
+          self.__columns = type_.columns
           
+          if not os.path.exists(self.__path):
+               raise FileNotFound(f"Json file {self.__path} not exists")
+          
+          with open(self.__path, 'r', encoding='utf-8') as file:
+               self.__json_obj = json.loads(file.read())
 
      
-     def __save(self) -> None:
-          if not os.path.exists(self._path):
-               raise FileNotFoundError(f"{self._path} not exists")
-          
-          with open(self._path, 'w') as file:
-               json.dump(self._json_obj, file, indent=4)
+     def __save(self, kwargs: dict[str, Any]) -> ClassType:
+          with open(self.__path, 'w') as file:
+               json.dump(self.__json_obj, file, indent=4)
+          return self.__table(**kwargs)
 
      
-     def values(self, **kwargs) -> None:
-          valide_input_data(
+     def values(self, **kwargs) -> ClassType:
+          _valide_input_data(
                data=kwargs,
-               json_file=self._json_obj,
-               table_name=self._table,
-               free=self._free,
-               primary=self._primary,
+               json_file=self.__json_obj,
+               table_name=self.__tablename,
+               free=self.__free,
+               primary=self.__primary,
+               columns=self.__columns,
                mode=Mode.INSERT
           )
-          if not self._free:
-               if self._primary:
-                    self._json_obj[self._table]['data'].update(
+          if not self.__free:
+               if self.__primary:
+                    self.__json_obj[self.__tablename]['data'].update(
                          {
-                              kwargs[self._primary]: {
+                              kwargs[self.__primary]: {
                                    key: value for key, value in kwargs.items()
                               }
                          }
                     )
                else:
-                    self._json_obj[self._table]['data'].append(
+                    self.__json_obj[self.__tablename]['data'].append(
                          {
                               key: value for key, value in kwargs.items()
                          }
                     )
           else:
                for key, value in kwargs.items():
-                    self._json_obj[self._table][key] = value
-          return self.__save()   
+                    self.__json_obj[self.__tablename][key] = value
+          return self.__save(kwargs)   

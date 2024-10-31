@@ -8,7 +8,8 @@ from json_orm.utils import MetaOrm
 
 __all__ = (
      "Column",
-     "JsonOrm"
+     "JsonOrm",
+     "DataArgs"
 )
 
 
@@ -16,6 +17,14 @@ __all__ = (
 class Column:
      pass
 
+
+
+class DataArgs:
+     tablename: str | None
+     primary: str | None
+     path: str
+     free: bool
+     
      
           
 class JsonOrm(metaclass=MetaOrm):

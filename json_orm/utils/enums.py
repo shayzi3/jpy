@@ -1,8 +1,12 @@
-
 from enum import Enum, auto
 
 
-class Mode:
+__all__ = (
+     "Mode",
+)
+
+
+class Mode(Enum):
      SELECT = auto()
      INSERT = auto()
      UPDATE = auto()

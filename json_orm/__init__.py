@@ -1,8 +1,2 @@
-
-from ._jpy import JsonOrm, Column
-
-
-__all__ = [
-     "JsonOrm",
-     "Column"
-]
+from ._jpy import *
+from .methods import *

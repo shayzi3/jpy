@@ -1,4 +1,6 @@
 
+import json_orm as orm
+
 from abc import ABC, abstractmethod
 from .checking import _attrs_data_class
 
@@ -39,8 +41,9 @@ class MetaOrm(type):
                name
           )
           metadata['columns'] = []
-          for key in attrs.get('__annotations__').keys():
-               metadata['columns'].append(key)
+          for key, value in attrs.get('__annotations__').items():
+               if issubclass(value, orm.Column):
+                    metadata['columns'].append(key)
                
           attrs = {
                key: None for key in metadata['columns']

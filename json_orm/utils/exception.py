@@ -45,3 +45,13 @@ class CannotCreateTable(Exception):
 class JsonFileEmpty(Exception):
      def __init__(self, *args: object) -> None:
           super().__init__(*args)
+          
+          
+class FileNotFound(Exception):
+     def __init__(self, *args: object) -> None:
+          super().__init__(*args)
+          
+          
+class NotFoundMetadata(Exception):
+     def __init__(self, *args: object) -> None:
+          super().__init__(*args)

@@ -1,5 +1,10 @@
 
-from json_orm import JsonOrm, Column
+from json_orm import (
+     JsonOrm, 
+     Column, 
+     DataArgs,
+     Insert
+)
 
 
 
@@ -8,10 +13,16 @@ class User(JsonOrm):
      id: Column
      name: Column
      
-     class Data:
+     
+     class Data(DataArgs):
           tablename = 'user'
           primary = 'id'
-          free = False
+          
+     # or
+     # class Data:
+     #      tablename = 'user'
+     #      primary = 'id'
+          
           
           
 class Item(JsonOrm):
@@ -19,16 +30,25 @@ class Item(JsonOrm):
      name: Column
      price: Column
      quality: Column
-     
-     class Data:
-          path = '.json'
-          
           
         
 if __name__ == '__main__':
-     JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
-     print(User.__dict__)
-     print(Item.__dict__)
+     # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
+     user = Insert(User).values(
+          id=555,
+          name='my'
+     )
+     print(user.name, user.id)
+
+     item = Insert(Item).values(
+          id=123,
+          name='MY',
+          price=100.0,
+          quality=10
+     )
+     print(item.id, item.name, item.price, item.quality)
+     # print(User.__dict__)
+     # print(Item.__dict__)
      
      #User - {
           # 'id': None, 

@@ -1,7 +1,6 @@
 
-
-from typing import Any, Self
-from json_orm.utils import valide_input_data, BaseClass
+from typing_extensions import Self, Any
+from json_orm.utils import _valide_input_data, BaseClass
 
 
 
@@ -37,7 +36,7 @@ class Select(BaseClass):
           
           
      def validate(self, obj: dict[str, Any]) -> None:
-          valide_input_data(
+          _valide_input_data(
                data=obj,
                json_file=self._json_obj,
                table_name=self._table,

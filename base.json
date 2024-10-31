@@ -4,6 +4,31 @@
             "id",
             "name"
         ],
-        "data": {}
+        "data": {
+            "5": {
+                "id": 5,
+                "name": "Vlad"
+            },
+            "555": {
+                "id": 555,
+                "name": "my"
+            }
+        }
+    },
+    "Item": {
+        "columns": [
+            "id",
+            "name",
+            "price",
+            "quality"
+        ],
+        "data": [
+            {
+                "id": 123,
+                "name": "MY",
+                "price": 100.0,
+                "quality": 10
+            }
+        ]
     }
 }
