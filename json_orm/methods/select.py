@@ -61,9 +61,6 @@ class Select(BaseClass, Generic[ClassType]):
           with open(self.__path, 'r', encoding='utf-8') as file:
                self.__json_obj = json.loads(file.read())
                
-     @property
-     def some_data(self):
-          return self.__where_values
           
      def __validate(self, obj: dict[str, Any]) -> None:
           _valide_input_data(
