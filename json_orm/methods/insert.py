@@ -38,7 +38,7 @@ class Insert(Generic[ClassType]):
           if dict_type:
                type_ = MetaData(**dict_type)
           else:
-               raise NotFoundMetadata(f"Metadata about class {table.__qualname__} not found.")
+               raise NotFoundMetadata(f"Metadata about class {table.__class__.__name__} not found.")
           
           self.__table = table
           self.__tablename = type_.tablename

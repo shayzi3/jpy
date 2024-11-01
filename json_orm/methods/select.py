@@ -24,6 +24,7 @@ __all__ = (
 ClassType = TypeVar("ClassType")
 
 
+
 class Select(BaseClass, Generic[ClassType]):
      __slots__ = (
           "__table",
@@ -50,7 +51,7 @@ class Select(BaseClass, Generic[ClassType]):
           self.__path = type_.path
           self.__primary = type_.primary
           self.__columns = type_.columns
-          self.__where_values = (1,)
+          self.__where_values = ('none-kwargs-where',)
           
           if isinstance(self.__primary, int):
                self.__primary = str(self._primary)
@@ -73,7 +74,7 @@ class Select(BaseClass, Generic[ClassType]):
           )
           
      @staticmethod
-     def __list_or_dict(data: dict | list) -> list:
+     def __list_or_dict(data: dict | list) -> list[dict[str, Any]]:
           if isinstance(data, dict):
                return [i for i in data.values()]
           
@@ -90,7 +91,7 @@ class Select(BaseClass, Generic[ClassType]):
           
           data = self.__json_obj[self.__tablename]['data']
           if not data:
-               self.__where_values = (2,)
+               self.__where_values = ('empty',)
                return self
 
           if not kwargs:
@@ -143,7 +144,7 @@ class Select(BaseClass, Generic[ClassType]):
                return self
 
           
-     def values(self, *args: str) -> ClassType | list[dict[str, Any]]:
+     def values(self, *args: str) -> ClassType | list[ClassType]:
           self.__validate(args)
           if self.__free:
                result = {}
@@ -158,10 +159,10 @@ class Select(BaseClass, Generic[ClassType]):
                          result.update({free_key: self.__json_obj[self.__tablename][free_key]})
                return result
           
-          if 2 in self.__where_values:
+          if 'empty' in self.__where_values:
                return None
           
-          if 1 in self.__where_values:
+          if 'none-kwargs-where' in self.__where_values:
                get = self.__json_obj[self.__tablename]['data']
                self.__where_values = self.__list_or_dict(get)
 
@@ -172,8 +173,8 @@ class Select(BaseClass, Generic[ClassType]):
                     beetween = {}
                     for key in args:
                          beetween[key] = data[key]
-                    result.append(beetween)      
-                      
+                    result.append(beetween)   
+          
           if len(result) == 1:
                return self.__table(**result[0])
-          return result
+          return [self.__table(**value) for value in result]

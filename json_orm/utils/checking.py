@@ -10,7 +10,6 @@ from json_orm.utils.exception import (
 )
 
 
-
 __all__ = (
      "_valide_input_data",
      "_attrs_data_class",

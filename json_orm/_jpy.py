@@ -1,8 +1,9 @@
 import json
 
 
-from typing import Any
+from typing import Any, TypeVar
 from json_orm.utils import MetaOrm
+from json_orm.methods.insert import Insert
 
 
 
@@ -12,6 +13,7 @@ __all__ = (
      "DataArgs"
 )
 
+T = TypeVar("T")
 
 
 class Column:
@@ -35,7 +37,8 @@ class JsonOrm(metaclass=MetaOrm):
                     for kw_key, value in kwargs.items():
                          if kw_key in columns:
                               self.__dict__[kw_key] = value
-                                       
+                              
+                              
      @classmethod
      def create_tables(cls, *args: type) -> None:
           if args:
@@ -45,36 +48,54 @@ class JsonOrm(metaclass=MetaOrm):
                
           pathes = {key.get('metadata').get('path'): {} for key in iterable}
           for data in iterable:
-               meta = data.get('metadata')
+               meta = data.get('metadata')                    
                
-               pathes[meta.get('path')].update({
-                    meta.get('tablename'): {
-                         'columns': meta.get('columns'),
-                         'data': [] if not meta.get('primary') else {}
+               tablename = meta.get('tablename')
+               if meta.get('free') == True:
+                    if meta.get('tablename') not in pathes[meta.get('path')]:
+                         pathes[meta.get('path')].update({
+                                   tablename: {key: None for key in meta.get('columns')}
+                              }  
+                         )
+                    else: 
+                         pathes[meta.get('path')][tablename].update(
+                              {key: None for key in meta.get('columns')}
+                         )
+                         
+               else:
+                    pathes[meta.get('path')].update({
+                         tablename: {
+                              'columns': meta.get('columns'),
+                              'data': [] if not meta.get('primary') else {}
+                              }
                          }
-                    }
-               )
+                    )
           for key, value in pathes.items():
                with open(key, 'w', encoding='utf-8') as file:
                     json.dump(value, file, indent=4)
      
      
-     @classmethod
-     def __len__(cls) -> int:
+     def __len__(self) -> int:
           ...
           
-       
-     @classmethod   
-     def __add__(
-          cls, 
-          obj: dict[str, Any]
-     ) -> ...:
           
-         ...
+     @classmethod
+     def __add__(cls: T, obj: dict[str, Any]) -> T:
+          ...
+          return Insert().values(**obj)
           
          
-     @classmethod 
-     def __repr__(cls) -> str:
-          return f'cls <{cls.__name__}>'
+     def __repr__(self) -> str:
+          meta = getattr(self, 'metadata')
+          name = self.__class__.__name__
+
+          if meta:
+               string = ''
+               for key in meta.get('columns'):
+                    string += f'{key}={getattr(self, key)} '
+                    
+               return f'{name}({string.strip()})'
+          return f'class <({name})>'
+
           
           

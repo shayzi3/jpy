@@ -4,16 +4,7 @@
             "id",
             "name"
         ],
-        "data": {
-            "5": {
-                "id": 5,
-                "name": "Vlad"
-            },
-            "555": {
-                "id": 555,
-                "name": "my"
-            }
-        }
+        "data": {}
     },
     "Item": {
         "columns": [
@@ -22,13 +13,9 @@
             "price",
             "quality"
         ],
-        "data": [
-            {
-                "id": 123,
-                "name": "MY",
-                "price": 100.0,
-                "quality": 10
-            }
-        ]
+        "data": []
+    },
+    "free_keys": {
+        "status": null
     }
 }

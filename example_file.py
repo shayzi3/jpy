@@ -14,7 +14,6 @@ class User(JsonOrm):
      id: Column
      name: Column
      
-     
      class Data(DataArgs):
           tablename = 'user'
           primary = 'id'
@@ -31,10 +30,20 @@ class Item(JsonOrm):
      name: Column
      price: Column
      quality: Column
+     
+     
+     
+class Free(JsonOrm):
+     status: Column
+     
+     class Data(DataArgs):
+          tablename = 'free_keys'
+          free = True
+          
           
         
 if __name__ == '__main__':
-     # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
+     JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
      # user = Insert(User).values(
      #      id=555,
      #      name='my'
@@ -47,14 +56,20 @@ if __name__ == '__main__':
      #      price=100.0,
      #      quality=10
      # )
-     item = Select(Item).where(quality=10).values()
-     if isinstance(item, list):
-          print(item)
-     else:
-          print(item.name, item.id)
+     # or
+     print(Free.__dict__)
+     # user = User() + {'id': 677, 'name': 'Kirill'}
+     # print(user.id, user.name)
+     
+     # item = Select(Item).where(quality=10).values()
+     # if isinstance(item, list):
+     #      print(item)
+     # else:
+     #      print(item.name, item.id)
           
-     user = Select(User).values()
-     print(user)
+     # user = Select(User).values()
+     # print(user)
+     
      # print(item.id, item.name, item.price, item.quality)
      # print(User.__dict__)
      # print(Item.__dict__)

@@ -1,4 +1,5 @@
 
+from typing import Callable
 import json_orm as orm
 
 from abc import ABC, abstractmethod
@@ -45,9 +46,15 @@ class MetaOrm(type):
                if issubclass(value, orm.Column):
                     metadata['columns'].append(key)
                
+          functions = {}
+          for key, value in attrs.items():
+               if callable(value) and not isinstance(value, type):
+                    functions[key] = value
+                    
           attrs = {
                key: None for key in metadata['columns']
           }
+          attrs.update(functions)
           attrs.update({'metadata': metadata})
           cls.__metadata__.append(attrs)
           
