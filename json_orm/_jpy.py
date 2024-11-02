@@ -51,25 +51,34 @@ class JsonOrm(metaclass=MetaOrm):
                meta = data.get('metadata')                    
                
                tablename = meta.get('tablename')
-               if meta.get('free') == True:
-                    if meta.get('tablename') not in pathes[meta.get('path')]:
+               if meta.get('tablename') not in pathes[meta.get('path')]:
+                    # Create with tablename
+                    if meta.get('free') is True:
                          pathes[meta.get('path')].update({
                                    tablename: {key: None for key in meta.get('columns')}
                               }  
                          )
-                    else: 
+                    else:
+                         pathes[meta.get('path')].update({
+                              tablename: {
+                                   'columns': meta.get('columns'),
+                                   'data': [] if not meta.get('primary') else {}
+                                   }
+                              }
+                         )
+               else: 
+                    # Create without tablename
+                    if meta.get('free') is True:
                          pathes[meta.get('path')][tablename].update(
                               {key: None for key in meta.get('columns')}
                          )
                          
-               else:
-                    pathes[meta.get('path')].update({
-                         tablename: {
+                    else:
+                         pathes[meta.get('path')][tablename].update({
                               'columns': meta.get('columns'),
                               'data': [] if not meta.get('primary') else {}
                               }
-                         }
-                    )
+                         )
           for key, value in pathes.items():
                with open(key, 'w', encoding='utf-8') as file:
                     json.dump(value, file, indent=4)
@@ -81,8 +90,7 @@ class JsonOrm(metaclass=MetaOrm):
           
      @classmethod
      def __add__(cls: T, obj: dict[str, Any]) -> T:
-          ...
-          return Insert().values(**obj)
+          return Insert(cls).values(**obj)
           
          
      def __repr__(self) -> str:

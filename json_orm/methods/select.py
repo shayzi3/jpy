@@ -157,7 +157,7 @@ class Select(BaseClass, Generic[ClassType]):
                else:
                     for free_key in args:
                          result.update({free_key: self.__json_obj[self.__tablename][free_key]})
-               return result
+               return self.__table(**result)
           
           if 'empty' in self.__where_values:
                return None
@@ -174,7 +174,7 @@ class Select(BaseClass, Generic[ClassType]):
                     for key in args:
                          beetween[key] = data[key]
                     result.append(beetween)   
-          
+
           if len(result) == 1:
                return self.__table(**result[0])
           return [self.__table(**value) for value in result]

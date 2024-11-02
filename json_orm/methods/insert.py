@@ -55,7 +55,7 @@ class Insert(Generic[ClassType]):
 
      
      def __save(self, kwargs: dict[str, Any]) -> ClassType:
-          with open(self.__path, 'w') as file:
+          with open(self.__path, 'w', encoding='utf-8') as file:
                json.dump(self.__json_obj, file, indent=4)
           return self.__table(**kwargs)
 
@@ -72,20 +72,18 @@ class Insert(Generic[ClassType]):
           )
           if not self.__free:
                if self.__primary:
-                    self.__json_obj[self.__tablename]['data'].update(
-                         {
-                              kwargs[self.__primary]: {
-                                   key: value for key, value in kwargs.items()
-                              }
-                         }
-                    )
+                    if isinstance(kwargs[self.__primary], int):
+                         kwargs[self.__primary] = str(kwargs[self.__primary])
+                         
+                    self.__json_obj[self.__tablename]['data'][kwargs[self.__primary]] = {
+                         key: value for key, value in kwargs.items()
+                    }
                else:
-                    self.__json_obj[self.__tablename]['data'].append(
-                         {
+                    self.__json_obj[self.__tablename]['data'].append({
                               key: value for key, value in kwargs.items()
                          }
                     )
           else:
                for key, value in kwargs.items():
                     self.__json_obj[self.__tablename][key] = value
-          return self.__save(kwargs)   
+          return self.__save(kwargs)

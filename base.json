@@ -4,7 +4,12 @@
             "id",
             "name"
         ],
-        "data": {}
+        "data": {
+            "180": {
+                "id": "180",
+                "name": "CAPRS"
+            }
+        }
     },
     "Item": {
         "columns": [
@@ -15,7 +20,7 @@
         ],
         "data": []
     },
-    "free_keys": {
+    "Free": {
         "status": null
     }
 }

@@ -10,6 +10,8 @@ from json_orm import (
 
 
 
+
+
 class User(JsonOrm):
      id: Column
      name: Column
@@ -24,7 +26,6 @@ class User(JsonOrm):
      #      primary = 'id'
           
           
-          
 class Item(JsonOrm):
      id: Column
      name: Column
@@ -37,18 +38,17 @@ class Free(JsonOrm):
      status: Column
      
      class Data(DataArgs):
-          tablename = 'free_keys'
           free = True
           
           
         
 if __name__ == '__main__':
-     JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
-     # user = Insert(User).values(
-     #      id=555,
-     #      name='my'
-     # )
-     # print(user.name, user.id)
+     # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
+     user = Insert(User).values(
+          id=180,
+          name='CAPRS'
+     )
+     print(user.name, user.id)
 
      # item = Insert(Item).values(
      #      id=123,
@@ -57,9 +57,12 @@ if __name__ == '__main__':
      #      quality=10
      # )
      # or
-     print(Free.__dict__)
-     # user = User() + {'id': 677, 'name': 'Kirill'}
      # print(user.id, user.name)
+     # insert = Insert(Free).values(status=True)
+     # select = Select(User).values(User.id)
+     # print(select)
+     
+     
      
      # item = Select(Item).where(quality=10).values()
      # if isinstance(item, list):
