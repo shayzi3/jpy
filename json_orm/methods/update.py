@@ -38,7 +38,7 @@ class Update(BaseClass, Generic[ClassType]):
           "__primary",
           "__columns",
           "__json_obj",
-          "__where_values"
+          "__where_values",
      )
      
      def __init__(self, table: ClassType) -> None:
@@ -130,7 +130,7 @@ class Update(BaseClass, Generic[ClassType]):
                               count += 1
                     
                     if count == len(kwargs):
-                         result.append({str(index): data[index]})           
+                         result.append({index: data[index]})           
           self.__where_values = result
           return self
           
@@ -138,4 +138,24 @@ class Update(BaseClass, Generic[ClassType]):
      
      def values(self, **kwargs: dict[str, Any]) -> ClassType:
           self.__validate(kwargs)
+          if self.__free:
+               ...
+                  
+          if not self.__where_values:
+               return None
+          
+          for dicts in self.__where_values:
+               for key, value in dicts.items():
+                    for kw_key in kwargs.keys():
+                         value[kw_key] = kwargs[kw_key]
+               
+               if self.__primary in value:
+                    key = value[self.__primary]
+               self.__json_obj[self.__tablename]['data'][key] = value
+                    
+          self.__save()
+          return self.__table(**kwargs)
+                         
+                    
+                    
      

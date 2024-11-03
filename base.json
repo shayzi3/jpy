@@ -7,11 +7,11 @@
         "data": {
             "180": {
                 "id": "180",
-                "name": "CAPRS"
+                "name": "MINER"
             },
             "555": {
                 "id": "555",
-                "name": "Vlad"
+                "name": "shayzi123"
             }
         }
     },
@@ -22,7 +22,14 @@
             "price",
             "quality"
         ],
-        "data": []
+        "data": [
+            {
+                "id": 172,
+                "name": "shayzi123",
+                "price": 9.3,
+                "quality": 10.1
+            }
+        ]
     },
     "Free": {
         "status": null

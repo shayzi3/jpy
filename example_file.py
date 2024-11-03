@@ -45,12 +45,14 @@ class Free(JsonOrm):
         
 if __name__ == '__main__':
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
-     # user = Insert(User).values(
-     #      id=555,
-     #      name='Vlad'
+     # user = Insert(Item).values(
+     #      id=172,
+     #      name='Colum',
+     #      price=9.3,
+     #      quality=10.1
      # )
      # print(user.name, user.id)
-     # print(Update(User).where(name='Vlad', id=15))
+     Update(Item).where(id=172).values(name='shayzi123')
 
      # item = Insert(Item).values(
      #      id=123,
@@ -61,8 +63,8 @@ if __name__ == '__main__':
      # or
      # print(user.id, user.name)
      # insert = Insert(Free).values(status=True)
-     select = Select(User).where(id=555, name='G').values()
-     print(select)
+     select = Select(Item).where(id=172).values()
+     print(select.name)
      
      
      

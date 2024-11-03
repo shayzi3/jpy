@@ -133,7 +133,7 @@ class Select(BaseClass, Generic[ClassType]):
           return self
 
           
-     def values(self, *args: str) -> ClassType | list[ClassType]:
+     def values(self, *args: str) -> ClassType | list[ClassType] | None:
           self.__validate(args)
           if self.__free:
                result = {}
@@ -149,7 +149,7 @@ class Select(BaseClass, Generic[ClassType]):
                return self.__table(**result)
           
           if not self.__where_values:
-               return []
+               return None
 
           result = self.__where_values
           if args:
