@@ -53,7 +53,7 @@ class Select(BaseClass, Generic[ClassType]):
           self.__path = type_.path
           self.__primary = type_.primary
           self.__columns = type_.columns
-          self.__where_values = ('none-kwargs-where',)
+          self.__where_values = []
           
           if isinstance(self.__primary, int):
                self.__primary = str(self._primary)
@@ -91,7 +91,6 @@ class Select(BaseClass, Generic[ClassType]):
           
           data = self.__json_obj[self.__tablename]['data']
           if not data:
-               self.__where_values = ('empty',)
                return self
 
           if not kwargs:
@@ -99,37 +98,28 @@ class Select(BaseClass, Generic[ClassType]):
                return self
 
           self.__validate(kwargs)
+          result = []
           if isinstance(data, dict):
                if self.__primary in kwargs.keys():
-                    if isinstance(kwargs[self.__primary], int):
-                         kwargs[self.__primary] = str(kwargs[self.__primary])
+                    primary = kwargs[self.__primary]
+                    if isinstance(primary, int):
+                         primary = str(primary)
                          
-                    data = {self.__primary: data.get(kwargs[self.__primary])}
-                    if data[self.__primary] is None:
-                         self.__where_values = []
+                    if not data.get(primary):
                          return self
+                    result.append(data.get(primary))
                     del kwargs[self.__primary]
                     
                if kwargs:
-                    sorting = []
-                    for key, value in data.items():
-                         count = 0
-                         for kw_key in kwargs.keys():
-                              if value[kw_key] == kwargs[kw_key]:
-                                   count += 1
-                         
-                         if count == len(kwargs):
-                              sorting.append(data[key])
-                    data = sorting
-
-               if isinstance(data, dict):
-                    self.__where_values = [i for i in data.values()]  
-               else:
-                    self.__where_values = data
-               return self
+                    if result:
+                         for value in result:
+                              for kw_key in kwargs.keys():
+                                   if value[kw_key] != kwargs[kw_key]:
+                                        del result[0]
+                    else:
+                         data = list(data.values())
           
-          elif isinstance(data, list):
-               sorting = []
+          if isinstance(data, list):
                for dicts in data:
                     count = 0
                     for kw_key in kwargs.keys():
@@ -137,10 +127,10 @@ class Select(BaseClass, Generic[ClassType]):
                               count += 1
                     
                     if count == len(kwargs):
-                         sorting.append(dicts)
+                         result.append(dicts)
                          
-               self.__where_values = sorting
-               return self
+          self.__where_values = result
+          return self
 
           
      def values(self, *args: str) -> ClassType | list[ClassType]:
@@ -158,12 +148,8 @@ class Select(BaseClass, Generic[ClassType]):
                          result.update({free_key: self.__json_obj[self.__tablename][free_key]})
                return self.__table(**result)
           
-          if 'empty' in self.__where_values:
-               return None
-          
-          if 'none-kwargs-where' in self.__where_values:
-               get = self.__json_obj[self.__tablename]['data']
-               self.__where_values = self.__list_or_dict(get)
+          if not self.__where_values:
+               return []
 
           result = self.__where_values
           if args:

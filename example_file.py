@@ -50,7 +50,7 @@ if __name__ == '__main__':
      #      name='Vlad'
      # )
      # print(user.name, user.id)
-     print(Update(User).where(name='Vlad'))
+     # print(Update(User).where(name='Vlad', id=15))
 
      # item = Insert(Item).values(
      #      id=123,
@@ -61,8 +61,8 @@ if __name__ == '__main__':
      # or
      # print(user.id, user.name)
      # insert = Insert(Free).values(status=True)
-     # select = Select(User).values(User.id)
-     # print(select)
+     select = Select(User).where(id=555, name='G').values()
+     print(select)
      
      
      
