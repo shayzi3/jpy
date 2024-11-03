@@ -52,7 +52,8 @@ if __name__ == '__main__':
      #      quality=10.1
      # )
      # print(user.name, user.id)
-     Update(Item).where(id=172).values(name='shayzi123')
+     # Update(Item).where(id=172).values(name='jji')
+     Update(Free).values(status=False)
 
      # item = Insert(Item).values(
      #      id=123,
@@ -64,7 +65,8 @@ if __name__ == '__main__':
      # print(user.id, user.name)
      # insert = Insert(Free).values(status=True)
      select = Select(Item).where(id=172).values()
-     print(select.name)
+     free = Select(Free).values()
+     print(select.name, free.status)
      
      
      

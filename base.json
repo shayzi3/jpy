@@ -25,13 +25,13 @@
         "data": [
             {
                 "id": 172,
-                "name": "shayzi123",
+                "name": "jji",
                 "price": 9.3,
                 "quality": 10.1
             }
         ]
     },
     "Free": {
-        "status": null
+        "status": false
     }
 }

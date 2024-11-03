@@ -92,15 +92,13 @@ class Update(BaseClass, Generic[ClassType]):
           
           data = self.__json_obj[self.__tablename]['data']
           if not data:
-               self.__where_values.append('empty')
                return self
           
           if not kwargs:
                self.__where_values = self.__list_or_dict(data)
                return self
+          
           self.__validate(kwargs)
-          
-          
           result: list[dict[str, Any]] = []
           if isinstance(data, dict):
                if self.__primary in kwargs.keys():
@@ -139,20 +137,22 @@ class Update(BaseClass, Generic[ClassType]):
      def values(self, **kwargs: dict[str, Any]) -> ClassType:
           self.__validate(kwargs)
           if self.__free:
-               ...
-                  
-          if not self.__where_values:
-               return None
-          
-          for dicts in self.__where_values:
-               for key, value in dicts.items():
-                    for kw_key in kwargs.keys():
-                         value[kw_key] = kwargs[kw_key]
+               for kw_key in kwargs.keys():
+                    self.__json_obj[self.__tablename][kw_key] = kwargs[kw_key]
                
-               if self.__primary in value:
-                    key = value[self.__primary]
-               self.__json_obj[self.__tablename]['data'][key] = value
+          else:   
+               if not self.__where_values:
+                    return None
+               
+               
+               for dicts in self.__where_values:
+                    for key, value in dicts.items():
+                         for kw_key in kwargs.keys():
+                              value[kw_key] = kwargs[kw_key]
                     
+                    if self.__primary in value:
+                         key = value[self.__primary]
+                    self.__json_obj[self.__tablename]['data'][key] = value
           self.__save()
           return self.__table(**kwargs)
                          
