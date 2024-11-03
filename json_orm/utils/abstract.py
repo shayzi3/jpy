@@ -1,9 +1,9 @@
 
-from typing import Callable
 import json_orm as orm
 
 from abc import ABC, abstractmethod
 from .checking import _attrs_data_class
+from json_orm.utils.exception import TableColumnNotExists
 
 
 
@@ -35,7 +35,7 @@ class MetaOrm(type):
                return super().__new__(cls, name, bases, attrs)
           
           if not attrs.get('__annotations__'):
-               raise ValueError("Not column")
+               raise TableColumnNotExists(f"class {name} dont have columns")
           
           metadata = _attrs_data_class(
                attrs.get('Data'),

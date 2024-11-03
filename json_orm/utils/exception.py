@@ -31,7 +31,7 @@ class FileNotValide(Exception):
           super().__init__(*args)
           
           
-class ClassWithoutColumns(Exception):
+class TableDontHaveColumns(Exception):
      def __init__(self, *args: object) -> None:
           super().__init__(*args)
           

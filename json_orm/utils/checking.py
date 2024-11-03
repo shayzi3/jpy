@@ -71,8 +71,8 @@ def _attrs_data_class(
      
      metadata = {}
      if not data_class:
-          metadata['path'] = default_values.get('path')
           metadata['tablename'] = name_class
+          metadata['path'] = default_values.get('path')
           metadata['primary'] = default_values.get('primary')
           metadata['free'] = default_values.get('free')
           
@@ -86,6 +86,5 @@ def _attrs_data_class(
                     if keyword == 'tablename':
                          metadata['tablename'] = name_class
                     
-                    else:
-                         metadata[keyword] = default_values.get(keyword)
+                    else: metadata[keyword] = default_values.get(keyword)
      return metadata

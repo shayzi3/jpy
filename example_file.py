@@ -4,7 +4,8 @@ from json_orm import (
      Column, 
      DataArgs,
      Insert,
-     Select
+     Select,
+     Update
 )
 
 
@@ -44,11 +45,12 @@ class Free(JsonOrm):
         
 if __name__ == '__main__':
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
-     user = Insert(User).values(
-          id=180,
-          name='CAPRS'
-     )
-     print(user.name, user.id)
+     # user = Insert(User).values(
+     #      id=555,
+     #      name='Vlad'
+     # )
+     # print(user.name, user.id)
+     print(Update(User).where(name='Vlad'))
 
      # item = Insert(Item).values(
      #      id=123,

@@ -1,11 +1,13 @@
 import json
 import os
 
+
 from typing_extensions import (
      Self, 
-     Any, 
      Generic, 
-     TypeVar
+     TypeVar,
+     Iterable,
+     Any
 )
 from json_orm.utils import (
      _valide_input_data, 
@@ -63,7 +65,7 @@ class Select(BaseClass, Generic[ClassType]):
                self.__json_obj = json.loads(file.read())
                
           
-     def __validate(self, obj: dict[str, Any]) -> None:
+     def __validate(self, obj: Iterable) -> None:
           _valide_input_data(
                data=obj,
                json_file=self.__json_obj,
@@ -74,15 +76,13 @@ class Select(BaseClass, Generic[ClassType]):
           )
           
      @staticmethod
-     def __list_or_dict(data: dict | list) -> list[dict[str, Any]]:
-          if isinstance(data, dict):
-               return [i for i in data.values()]
-          
-          elif isinstance(data, list):
-               return data
+     def __list_or_dict(obj: Iterable) -> list[dict[str, Any]]:
+          if isinstance(obj, dict):
+               return list(obj.values())
+          return obj
           
                
-     def where(self, **kwargs) -> Self:
+     def where(self, **kwargs: dict[str, Any]) -> Self:
           # Обозначения в self.__where_values
           # пустой tuple - таблица free или в значении ключа data пусто
           # пустой list - данные, которые искал пользователь не нашлись
@@ -108,7 +108,6 @@ class Select(BaseClass, Generic[ClassType]):
                     if data[self.__primary] is None:
                          self.__where_values = []
                          return self
-                    
                     del kwargs[self.__primary]
                     
                if kwargs:
