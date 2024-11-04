@@ -12,7 +12,6 @@ from json_orm import (
 
 
 
-
 class User(JsonOrm):
      id: Column
      name: Column
@@ -41,20 +40,22 @@ class Free(JsonOrm):
      class Data(DataArgs):
           free = True
           
-          
+
+
         
 if __name__ == '__main__':
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
      # user = Insert(Item).values(
-     #      id=172,
+     #      id=777,
      #      name='Colum',
-     #      price=9.3,
+     #      price=10,
      #      quality=10.1
      # )
      # print(user.name, user.id)
      # Update(Item).where(id=172).values(name='jji')
-     Update(Free).values(status=False)
-
+     # print(Update(User).where(id=555).values(name='Vladlen'))
+     print(Update(User).where(id=180).values(name='ALPHA2'))
+     # print(Update(Free).values())
      # item = Insert(Item).values(
      #      id=123,
      #      name='MY',
@@ -64,9 +65,9 @@ if __name__ == '__main__':
      # or
      # print(user.id, user.name)
      # insert = Insert(Free).values(status=True)
-     select = Select(Item).where(id=172).values()
-     free = Select(Free).values()
-     print(select.name, free.status)
+     # select = Select(Item).where(id=172).values()
+     # free = Select(Free).values()
+     # print(select.name, free.status)
      
      
      

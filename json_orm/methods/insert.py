@@ -2,9 +2,10 @@ import json
 import os
 
 
-from typing import Any, TypeVar, Generic
+from typing_extensions import TypeVar, Generic
 from json_orm.utils import (
      _valide_input_data, 
+     _save,
      Mode, 
      MetaData
 )
@@ -17,7 +18,6 @@ from json_orm.utils.exception import (
 __all__ = (
      "Insert",
 )
-
 ClassType = TypeVar('ClassType')
 
 
@@ -54,11 +54,6 @@ class Insert(Generic[ClassType]):
                self.__json_obj = json.loads(file.read())
 
      
-     def __save(self) -> None:
-          with open(self.__path, 'w', encoding='utf-8') as file:
-               json.dump(self.__json_obj, file, indent=4)
-
-     
      def values(self, **kwargs) -> ClassType:
           _valide_input_data(
                data=kwargs,
@@ -86,5 +81,8 @@ class Insert(Generic[ClassType]):
                for key, value in kwargs.items():
                     self.__json_obj[self.__tablename][key] = value
                     
-          self.__save()
+          _save(
+               obj=self.__json_obj,
+               path=self.__path
+          )
           return self.__table(**kwargs)

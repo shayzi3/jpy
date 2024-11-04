@@ -11,6 +11,7 @@ from typing_extensions import (
 )
 from json_orm.utils import (
      _valide_input_data, 
+     _list_or_dict,
      BaseClass, 
      MetaData
 )
@@ -74,13 +75,6 @@ class Select(BaseClass, Generic[ClassType]):
                columns=self.__columns,
                primary=self.__primary
           )
-          
-     @staticmethod
-     def __list_or_dict(obj: Iterable) -> list[dict[str, Any]]:
-          if isinstance(obj, dict):
-               return list(obj.values())
-          return obj
-          
                
      def where(self, **kwargs: dict[str, Any]) -> Self:
           # Обозначения в self.__where_values
@@ -94,7 +88,7 @@ class Select(BaseClass, Generic[ClassType]):
                return self
 
           if not kwargs:
-               self.__where_values = self.__list_or_dict(data)
+               self.__where_values = _list_or_dict(data)
                return self
 
           self.__validate(kwargs)

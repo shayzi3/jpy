@@ -2,6 +2,7 @@
 import json_orm as orm
 
 from abc import ABC, abstractmethod
+
 from .checking import _attrs_data_class
 from json_orm.utils.exception import TableColumnNotExists
 
@@ -9,7 +10,7 @@ from json_orm.utils.exception import TableColumnNotExists
 
 __all__ = (
      "BaseClass",
-     "MetaOrm"
+     "MetaOrm",
 )
 
 
@@ -23,8 +24,7 @@ class BaseClass(ABC):
      @abstractmethod
      def values(self):
           ...
-          
-          
+        
            
           
 class MetaOrm(type):

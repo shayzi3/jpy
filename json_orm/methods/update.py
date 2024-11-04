@@ -10,10 +10,12 @@ from typing_extensions import (
      Iterable
 )
 from json_orm.utils import (
-     BaseClass, 
      MetaData,
+     BaseClass,
+     _save,
+     _list_or_dict,
      _valide_input_data,
-     Mode
+     _where_for_update_and_delete
 )
 from json_orm.utils.exception import (
      NotFoundMetadata,
@@ -61,31 +63,19 @@ class Update(BaseClass, Generic[ClassType]):
           
           with open(self.__path, 'r', encoding='utf-8') as file:
                self.__json_obj = json.loads(file.read())
-               
-               
-     def __save(self) -> None:
-          with open(self.__path, 'w', encoding='utf-8') as file:
-               json.dump(self.__json_obj, file, indent=4)
           
           
-     def __validate(self, obj: Iterable) -> None:
+     def __valide(self, obj: Iterable) -> None:
           _valide_input_data(
                data=obj,
                json_file=self.__json_obj,
                table_name=self.__tablename,
                free=self.__free,
                primary=self.__primary,
-               columns=self.__columns,
-               mode=Mode.UPDATE
+               columns=self.__columns
           )
           
-     @staticmethod
-     def __list_or_dict(obj: Iterable) -> list[dict[str, Any]]:
-          if isinstance(obj, dict):
-               return list(obj.values())
-          return obj
-               
-               
+          
      def where(self, **kwargs) -> Self:
           if self.__free:
                return self
@@ -95,47 +85,25 @@ class Update(BaseClass, Generic[ClassType]):
                return self
           
           if not kwargs:
-               self.__where_values = self.__list_or_dict(data)
+               self.__where_values = _list_or_dict(data)
                return self
           
-          self.__validate(kwargs)
-          result: list[dict[str, Any]] = []
-          if isinstance(data, dict):
-               if self.__primary in kwargs.keys():
-                    primary = kwargs[self.__primary]
-                    if isinstance(primary, int):
-                         primary = str(primary)
-                         
-                    if not data.get(primary):
-                         return self
-                    result.append({primary: data.get(primary)})
-                    del kwargs[self.__primary]
-                    
-               if kwargs:
-                    if result:
-                         for _, value in result[0].items():
-                              for kw_key in kwargs.keys():
-                                   if value[kw_key] != kwargs[kw_key]:
-                                        del result[0]
-                    else:
-                         data = list(data.values())
-                    
-          if isinstance(data, list):
-               for index in range(len(data)):
-                    count = 0
-                    for kw_key in kwargs.keys():
-                         if data[index][kw_key] == kwargs[kw_key]:
-                              count += 1
-                    
-                    if count == len(kwargs):
-                         result.append({index: data[index]})           
-          self.__where_values = result
+          self.__valide(kwargs)
+          self.__where_values = _where_for_update_and_delete(
+               self=self,
+               data=data,
+               kwargs=kwargs,
+               primary_key=self.__primary
+          )
           return self
           
           
      
-     def values(self, **kwargs: dict[str, Any]) -> ClassType:
-          self.__validate(kwargs)
+     def values(self, **kwargs: dict[str, Any]) -> ClassType | None:
+          if not kwargs:
+               return None
+          
+          self.__valide(kwargs)
           if self.__free:
                for kw_key in kwargs.keys():
                     self.__json_obj[self.__tablename][kw_key] = kwargs[kw_key]
@@ -144,16 +112,27 @@ class Update(BaseClass, Generic[ClassType]):
                if not self.__where_values:
                     return None
                
-               
                for dicts in self.__where_values:
                     for key, value in dicts.items():
-                         for kw_key in kwargs.keys():
-                              value[kw_key] = kwargs[kw_key]
-                    
-                    if self.__primary in value:
-                         key = value[self.__primary]
-                    self.__json_obj[self.__tablename]['data'][key] = value
-          self.__save()
+                         if isinstance(value, dict):
+                              for kw_key in kwargs.keys():
+                                   value[kw_key] = kwargs[kw_key]
+                         
+                         else:
+                              for kw_key in kwargs.keys():
+                                   dicts[kw_key] = kwargs[kw_key]
+                         
+                    if isinstance(value, dict):
+                         if self.__primary in value:
+                              key = value[self.__primary]
+                         self.__json_obj[self.__tablename]['data'][key] = value
+                         
+                    elif isinstance(key, int):
+                         self.__json_obj[self.__tablename]['data'][key] = value
+          _save(
+               obj=self.__json_obj,
+               path=self.__path
+          )
           return self.__table(**kwargs)
                          
                     

@@ -1,5 +1,6 @@
+import json
 
-from typing import Any, Iterable
+from typing_extensions import Any, Iterable
 from json_orm.utils.enums import Mode
 from json_orm.utils.exception import (
      TableNotExists,
@@ -13,6 +14,9 @@ from json_orm.utils.exception import (
 __all__ = (
      "_valide_input_data",
      "_attrs_data_class",
+     "_save",
+     "_list_or_dict",
+     "_where_for_update_and_delete",
 )
 
 
@@ -88,3 +92,56 @@ def _attrs_data_class(
                     
                     else: metadata[keyword] = default_values.get(keyword)
      return metadata
+
+
+def _where_for_update_and_delete(
+     self: type,
+     data: Iterable,
+     kwargs: dict[str, Any],
+     primary_key: str | None
+) -> list[dict[str, Any]] | type:
+     
+     result = []
+     if isinstance(data, dict):
+          if primary_key in kwargs.keys():
+               primary = kwargs[primary_key]
+               if isinstance(primary, int):
+                    primary = str(primary)
+                         
+               if not data.get(primary):
+                    return self
+               result.append({primary: data.get(primary)})
+               del kwargs[primary_key]
+                    
+          if kwargs:
+               if result:
+                    for index in range(len(result)):
+                         for items_value in result[index].values():
+                              for kw_key in kwargs.keys():
+                                   if items_value[kw_key] != kwargs[kw_key]:
+                                        del result[index]
+               else:
+                    data = list(data.values())
+                    
+     if isinstance(data, list):
+          for index in range(len(data)):
+               count = 0
+               for kw_key in kwargs.keys():
+                    if data[index][kw_key] == kwargs[kw_key]:
+                         count += 1
+                    
+               if count == len(kwargs):
+                    result.append({index: data[index]})
+     return result
+
+
+
+def _save(obj: dict[str, Any], path: str) -> None:
+     with open(path, 'w', encoding='utf-8') as file:
+          json.dump(obj, file, indent=4, ensure_ascii=False)
+          
+          
+def _list_or_dict(obj: Iterable) -> list[dict[str, Any]]:
+     if isinstance(obj, dict):
+          return list(obj.values())
+     return obj

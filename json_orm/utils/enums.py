@@ -7,7 +7,4 @@ __all__ = (
 
 
 class Mode(Enum):
-     SELECT = auto()
      INSERT = auto()
-     UPDATE = auto()
-     DELETE = auto()

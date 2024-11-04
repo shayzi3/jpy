@@ -100,7 +100,8 @@ class JsonOrm(metaclass=MetaOrm):
           if meta:
                string = ''
                for key in meta.get('columns'):
-                    string += f'{key}={getattr(self, key)} '
+                    if key != getattr(self, key):
+                         string += f'{key}={getattr(self, key)} '
                     
                return f'{name}({string.strip()})'
           return f'class <({name})>'

@@ -7,11 +7,11 @@
         "data": {
             "180": {
                 "id": "180",
-                "name": "MINER"
+                "name": "ALPHA2"
             },
             "555": {
                 "id": "555",
-                "name": "shayzi123"
+                "name": "MI_BAND"
             }
         }
     },
@@ -24,14 +24,20 @@
         ],
         "data": [
             {
-                "id": 172,
-                "name": "jji",
-                "price": 9.3,
+                "id": 72,
+                "name": "Biobp",
+                "price": 15,
+                "quality": 10.1
+            },
+            {
+                "id": 777,
+                "name": "Biobp",
+                "price": 15,
                 "quality": 10.1
             }
         ]
     },
     "Free": {
-        "status": false
+        "status": 1
     }
 }
