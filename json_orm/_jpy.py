@@ -104,7 +104,7 @@ class JsonOrm(metaclass=MetaOrm):
                          string += f'{key}={getattr(self, key)} '
                     
                return f'{name}({string.strip()})'
-          return f'class <({name})>'
+          return f'{name}()'
 
           
           

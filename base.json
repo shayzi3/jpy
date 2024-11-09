@@ -5,13 +5,13 @@
             "name"
         ],
         "data": {
-            "180": {
-                "id": "180",
-                "name": "ALPHA2"
-            },
             "555": {
                 "id": "555",
                 "name": "MI_BAND"
+            },
+            "150": {
+                "id": 150,
+                "name": "NEW_ID"
             }
         }
     },
@@ -31,13 +31,13 @@
             },
             {
                 "id": 777,
-                "name": "Biobp",
-                "price": 15,
+                "name": "frag",
+                "price": 500,
                 "quality": 10.1
             }
         ]
     },
     "Free": {
-        "status": 1
+        "status": "Trues"
     }
 }

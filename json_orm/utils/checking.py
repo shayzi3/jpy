@@ -99,7 +99,7 @@ def _where_for_update_and_delete(
      data: Iterable,
      kwargs: dict[str, Any],
      primary_key: str | None
-) -> list[dict[str, Any]] | type:
+) -> list[dict[str, dict]] | type:
      
      result = []
      if isinstance(data, dict):

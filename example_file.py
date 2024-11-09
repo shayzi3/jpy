@@ -52,9 +52,11 @@ if __name__ == '__main__':
      #      quality=10.1
      # )
      # print(user.name, user.id)
-     # Update(Item).where(id=172).values(name='jji')
+     print(Update(Free).values(status='Trues'))
+     # print(Update(Item).where().values(price=500))
      # print(Update(User).where(id=555).values(name='Vladlen'))
-     print(Update(User).where(id=180).values(name='ALPHA2'))
+     # print(Update(User).where(id=180).values(id=150, name='NEW_ID'))
+     
      # print(Update(Free).values())
      # item = Insert(Item).values(
      #      id=123,

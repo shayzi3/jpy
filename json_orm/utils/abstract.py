@@ -41,10 +41,11 @@ class MetaOrm(type):
                attrs.get('Data'),
                name
           )
-          metadata['columns'] = []
+          columns = set()
           for key, value in attrs.get('__annotations__').items():
                if issubclass(value, orm.Column):
-                    metadata['columns'].append(key)
+                    columns.add(key)
+          metadata['columns'] = list(columns)
                
           functions = {}
           for key, value in attrs.items():

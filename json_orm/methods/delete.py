@@ -94,3 +94,7 @@ class Delete(BaseClass, Generic[ClassType]):
                primary_key=self.__primary
           )
           return self
+     
+     
+     def values(self, *args: str) -> ClassType:
+          ...

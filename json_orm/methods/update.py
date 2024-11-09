@@ -3,7 +3,6 @@ import os
 
 
 from typing_extensions import (
-     Any,
      Generic,
      TypeVar,
      Self,
@@ -99,7 +98,7 @@ class Update(BaseClass, Generic[ClassType]):
           
           
      
-     def values(self, **kwargs: dict[str, Any]) -> ClassType | None:
+     def values(self, **kwargs) -> ClassType | None:
           if not kwargs:
                return None
           
@@ -113,22 +112,24 @@ class Update(BaseClass, Generic[ClassType]):
                     return None
                
                for dicts in self.__where_values:
+                    primary_key_changed = ''
+                    
                     for key, value in dicts.items():
-                         if isinstance(value, dict):
-                              for kw_key in kwargs.keys():
-                                   value[kw_key] = kwargs[kw_key]
-                         
-                         else:
-                              for kw_key in kwargs.keys():
-                                   dicts[kw_key] = kwargs[kw_key]
-                         
+                         for kw_key in kwargs.keys():
+                              if kw_key == self.__primary:
+                                   primary_key_changed = key
+                              value[kw_key] = kwargs[kw_key]
+                    
                     if isinstance(value, dict):
-                         if self.__primary in value:
-                              key = value[self.__primary]
+                         if isinstance(value.get(self.__primary), int):
+                              key = str(value[self.__primary])
                          self.__json_obj[self.__tablename]['data'][key] = value
+                         
+                         if primary_key_changed:
+                              del self.__json_obj[self.__tablename]['data'][primary_key_changed]
                          
                     elif isinstance(key, int):
-                         self.__json_obj[self.__tablename]['data'][key] = value
+                         self.__json_obj[self.__tablename]['data'][int(key)] = value
           _save(
                obj=self.__json_obj,
                path=self.__path
