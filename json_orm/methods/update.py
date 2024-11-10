@@ -89,7 +89,6 @@ class Update(BaseClass, Generic[ClassType]):
           
           self.__valide(kwargs)
           self.__where_values = _where_for_update_and_delete(
-               self=self,
                data=data,
                kwargs=kwargs,
                primary_key=self.__primary
@@ -115,10 +114,16 @@ class Update(BaseClass, Generic[ClassType]):
                     primary_key_changed = ''
                     
                     for key, value in dicts.items():
-                         for kw_key in kwargs.keys():
-                              if kw_key == self.__primary:
-                                   primary_key_changed = key
-                              value[kw_key] = kwargs[kw_key]
+                         if isinstance(value, dict):
+                              for kw_key in kwargs.keys():
+                                   if kw_key == self.__primary:
+                                        primary_key_changed = key
+                                   value[kw_key] = kwargs[kw_key]
+                         
+                         else:
+                              for kw_key in kwargs.keys():
+                                   dicts[kw_key] = kwargs[kw_key]
+                              break
                     
                     if isinstance(value, dict):
                          if isinstance(value.get(self.__primary), int):
@@ -129,7 +134,7 @@ class Update(BaseClass, Generic[ClassType]):
                               del self.__json_obj[self.__tablename]['data'][primary_key_changed]
                          
                     elif isinstance(key, int):
-                         self.__json_obj[self.__tablename]['data'][int(key)] = value
+                         self.__json_obj[self.__tablename]['data'][key] = value
           _save(
                obj=self.__json_obj,
                path=self.__path

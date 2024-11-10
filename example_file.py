@@ -5,7 +5,8 @@ from json_orm import (
      DataArgs,
      Insert,
      Select,
-     Update
+     Update,
+     Delete
 )
 
 
@@ -33,7 +34,6 @@ class Item(JsonOrm):
      quality: Column
      
      
-     
 class Free(JsonOrm):
      status: Column
      
@@ -44,34 +44,41 @@ class Free(JsonOrm):
 
         
 if __name__ == '__main__':
+     # create table
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
-     # user = Insert(Item).values(
+     
+     # Insert
+     # user = Insert(User).values(
      #      id=777,
-     #      name='Colum',
-     #      price=10,
-     #      quality=10.1
+     #      name='Colum'
      # )
      # print(user.name, user.id)
-     print(Update(Free).values(status='Trues'))
-     # print(Update(Item).where().values(price=500))
-     # print(Update(User).where(id=555).values(name='Vladlen'))
-     # print(Update(User).where(id=180).values(id=150, name='NEW_ID'))
      
-     # print(Update(Free).values())
      # item = Insert(Item).values(
      #      id=123,
      #      name='MY',
      #      price=100.0,
      #      quality=10
      # )
-     # or
-     # print(user.id, user.name)
      # insert = Insert(Free).values(status=True)
+     
+     
+     # Delete
+     # Delete(Table).drop_table()
+     Delete(User).drop_data()
+     
+     
+     # Update
+     # print(Update(Item).where(id=777).values(name='Armen', price=222))
+     # print(Update(Item).where().values(price=500))
+     # print(Update(User).where(id=555).values(name='Vladlen'))
+     # print(Update(User).where(id=180).values(id=150, name='NEW_ID'))
+     # print(Update(Free).values())
+     
+     # Select     
      # select = Select(Item).where(id=172).values()
      # free = Select(Free).values()
      # print(select.name, free.status)
-     
-     
      
      # item = Select(Item).where(quality=10).values()
      # if isinstance(item, list):
@@ -82,9 +89,6 @@ if __name__ == '__main__':
      # user = Select(User).values()
      # print(user)
      
-     # print(item.id, item.name, item.price, item.quality)
-     # print(User.__dict__)
-     # print(Item.__dict__)
      
      #User - {
           # 'id': None, 
@@ -119,11 +123,3 @@ if __name__ == '__main__':
      
      # user = User(id=5, name='Vlad')
      # print(user.id, user.name) - 5 Vlad
-
-     
-     
-# How look insert, delete, update, select methods
-# Insert(Table).values(kwargs)
-# Delete(Table).where(kwargs)
-# Select(Table).where(kwargs).values(args: str)
-# Update(Table).where(kwargs).values(args: str)

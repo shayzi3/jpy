@@ -3,7 +3,6 @@ import os
 
 
 from typing_extensions import (
-     Any,
      Generic,
      TypeVar,
      Self,
@@ -19,7 +18,8 @@ from json_orm.utils import (
 )
 from json_orm.utils.exception import (
      NotFoundMetadata,
-     FileNotFound
+     FileNotFound,
+     TableNotExists
 )
 
 
@@ -31,7 +31,7 @@ ClassType = TypeVar("ClassType")
 
 
 
-class Delete(BaseClass, Generic[ClassType]):
+class Delete(Generic[ClassType]):
      __slots__ = (
           "__table",
           "__tablename",
@@ -64,6 +64,9 @@ class Delete(BaseClass, Generic[ClassType]):
           with open(self.__path, 'r', encoding='utf-8') as file:
                self.__json_obj = json.loads(file.read())
                
+          if self.__tablename not in self.__json_obj.keys():
+               raise TableNotExists(f"Table {self.__tablename} not exists")
+               
      def __valide(self, obj: Iterable) -> None:
           _valide_input_data(
                data=obj,
@@ -95,6 +98,31 @@ class Delete(BaseClass, Generic[ClassType]):
           )
           return self
      
+     def drop_table(self) -> None:
+          del self.__json_obj[self.__tablename]
+          
+          return _save(
+               obj=self.__json_obj,
+               path=self.__path
+          )
      
-     def values(self, *args: str) -> ClassType:
-          ...
+     def drop_data(self) -> None:
+          type_data = self.__json_obj[self.__tablename]['data']
+          
+          if isinstance(type_data, dict):
+               self.__json_obj[self.__tablename]['data'] = {}
+          
+          elif isinstance(type_data, list):
+               self.__json_obj[self.__tablename]['data'] = []
+               
+          return _save(
+               obj=self.__json_obj,
+               path=self.__path
+          )
+     
+     def drop_column(self) -> None:
+          return None
+     
+     
+     def drop_one_data(self) -> None:
+          return None

@@ -33,7 +33,7 @@ class JsonOrm(metaclass=MetaOrm):
      def __init__(self, **kwargs) -> None:
           if kwargs:
                columns: list[str] = self.metadata.get('columns')
-               if columns:  
+               if columns:
                     for kw_key, value in kwargs.items():
                          if kw_key in columns:
                               self.__dict__[kw_key] = value

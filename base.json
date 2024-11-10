@@ -1,43 +1,21 @@
 {
     "user": {
         "columns": [
-            "id",
-            "name"
+            "name",
+            "id"
         ],
-        "data": {
-            "555": {
-                "id": "555",
-                "name": "MI_BAND"
-            },
-            "150": {
-                "id": 150,
-                "name": "NEW_ID"
-            }
-        }
+        "data": {}
     },
     "Item": {
         "columns": [
-            "id",
             "name",
+            "quality",
             "price",
-            "quality"
+            "id"
         ],
-        "data": [
-            {
-                "id": 72,
-                "name": "Biobp",
-                "price": 15,
-                "quality": 10.1
-            },
-            {
-                "id": 777,
-                "name": "frag",
-                "price": 500,
-                "quality": 10.1
-            }
-        ]
+        "data": []
     },
     "Free": {
-        "status": "Trues"
+        "status": null
     }
 }

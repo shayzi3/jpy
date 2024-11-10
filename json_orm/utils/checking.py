@@ -95,7 +95,6 @@ def _attrs_data_class(
 
 
 def _where_for_update_and_delete(
-     self: type,
      data: Iterable,
      kwargs: dict[str, Any],
      primary_key: str | None
@@ -109,7 +108,7 @@ def _where_for_update_and_delete(
                     primary = str(primary)
                          
                if not data.get(primary):
-                    return self
+                    return None
                result.append({primary: data.get(primary)})
                del kwargs[primary_key]
                     
@@ -139,6 +138,7 @@ def _where_for_update_and_delete(
 def _save(obj: dict[str, Any], path: str) -> None:
      with open(path, 'w', encoding='utf-8') as file:
           json.dump(obj, file, indent=4, ensure_ascii=False)
+     return None
           
           
 def _list_or_dict(obj: Iterable) -> list[dict[str, Any]]:
