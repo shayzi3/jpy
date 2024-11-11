@@ -40,7 +40,6 @@ class Delete(Generic[ClassType]):
           "__primary",
           "__columns",
           "__json_obj",
-          "__where_values",
      )
      
      def __init__(self, table: ClassType) -> None:
@@ -56,7 +55,6 @@ class Delete(Generic[ClassType]):
           self.__path = type_.path
           self.__primary = type_.primary
           self.__columns = type_.columns
-          self.__where_values = []
           
           if not os.path.exists(self.__path):
                raise FileNotFound(f"Json file {self.__path} not exists")
@@ -78,25 +76,37 @@ class Delete(Generic[ClassType]):
           )
           
           
-     def where(self, **kwargs) -> Self:
-          if self.__free:
-               return self
-          
+     def drop_one_data(self, **kwargs) -> None:
           data = self.__json_obj[self.__tablename]['data']
-          if not data:
-               return self
-          
-          if not kwargs:
-               self.__where_values = _list_or_dict(data)
-               return self
-          
+          if not data or self.__free or not kwargs:
+               return None
+                    
           self.__valide(kwargs)
-          self.__where_values = _where_for_update_and_delete(
-               self=self,
-               kwargs=kwargs,
-               primary_key=self.__primary
+          if isinstance(data, dict):
+               if self.__primary not in kwargs.keys():
+                    for key, value in data.items():
+                         for kw_key in kwargs.keys():
+                              if kwargs[kw_key] == value[kw_key]:
+                                   del self.__json_obj[self.__tablename]['data'][key]
+               else:
+                    key = kwargs[self.__primary]
+                    if isinstance(key, int):
+                         key = str(key)
+                         
+                    if data.get(key):
+                         del self.__json_obj[self.__tablename]['data'][key]
+               
+          if isinstance(data, list):
+               for index in range(len(data)):
+                    for kw_key in kwargs.keys():
+                         if kwargs[kw_key] == data[index][kw_key]:
+                              self.__json_obj[self.__tablename]['data'].pop(index)
+          return _save(
+               obj=self.__json_obj,
+               path=self.__path
           )
-          return self
+          
+          
      
      def drop_table(self) -> None:
           del self.__json_obj[self.__tablename]
@@ -119,10 +129,3 @@ class Delete(Generic[ClassType]):
                obj=self.__json_obj,
                path=self.__path
           )
-     
-     def drop_column(self) -> None:
-          return None
-     
-     
-     def drop_one_data(self) -> None:
-          return None

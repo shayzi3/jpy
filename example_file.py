@@ -49,8 +49,8 @@ if __name__ == '__main__':
      
      # Insert
      # user = Insert(User).values(
-     #      id=777,
-     #      name='Colum'
+     #      id=150,
+     #      name='Vasya'
      # )
      # print(user.name, user.id)
      
@@ -65,7 +65,7 @@ if __name__ == '__main__':
      
      # Delete
      # Delete(Table).drop_table()
-     Delete(User).drop_data()
+     Delete(Item).drop_one_data()
      
      
      # Update
