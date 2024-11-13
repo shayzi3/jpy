@@ -1,6 +1,5 @@
 
-from typing import Callable
-from typing_extensions import TypeVar
+from typing_extensions import Callable
 from functools import wraps
 
 from json_orm.utils.exception import (
@@ -13,10 +12,9 @@ from json_orm.utils.exception import (
 __all__ = (
      "custom_option",
 )
-T = TypeVar("T")
 
 
-def custom_option(model: T) -> Callable[[], dict]:
+def custom_option(model: type) -> Callable[[], dict]:
      def decorator(func: Callable) -> Callable[[], dict]:
           
           @wraps(func)
@@ -38,9 +36,10 @@ def custom_option(model: T) -> Callable[[], dict]:
                     if key not in metadata.get('columns'):
                          raise TableColumnNotExists(f"Column {key} for table {metadata.get('tablename')} not exists.")
                return {
-                    'args': func.__code__.co_varnames,
-                    'model': model,
-                    'function': func
+                    metadata.get('tablename'): {
+                         'args': func.__code__.co_varnames,
+                         'function': func
+                    }
                }
           return wrapper
      return decorator

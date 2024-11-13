@@ -42,11 +42,12 @@ class Free(JsonOrm):
 
         
 if __name__ == '__main__':
-     @custom_option(model=Item)
-     def check_id(id: int) -> str:
-          return id % 2 == 0 and id > 110
+     @custom_option(model=User)
+     def check_id(id: int) -> bool:
+          return int(id) > 170
      
-     print(check_id)
+     user = Select(User).custom_options(check_id).values(User.name)
+     print(user.name)
      
      # create table
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)

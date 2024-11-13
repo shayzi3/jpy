@@ -7,6 +7,7 @@ from typing_extensions import (
      Generic, 
      TypeVar,
      Iterable,
+     Callable,
      Any
 )
 from json_orm.utils import (
@@ -159,3 +160,26 @@ class Select(BaseClass, Generic[ClassType]):
           return [self.__table(**value) for value in result]
      
      
+     def custom_options(self, *args: Callable) -> Self | None:
+          if not args:
+               return None
+          
+          json_data = self.__json_obj[self.__tablename]['data']
+          if not json_data: 
+               return self
+          
+          if isinstance(json_data, dict):
+               json_data = list(json_data.values())
+          
+          meta_function = {}
+          for func_data in args:
+               meta_function.update(func_data())
+               
+          func = meta_function.get(self.__tablename).get('function')
+          arguments = meta_function.get(self.__tablename).get('args')  
+             
+          for dict_ in json_data:
+               for arg in arguments:
+                    if func(dict_.get(arg)) is True:
+                         self.__where_values.append(dict_)
+          return self
