@@ -157,3 +157,5 @@ class Select(BaseClass, Generic[ClassType]):
           if len(result) == 1:
                return self.__table(**result[0])
           return [self.__table(**value) for value in result]
+     
+     

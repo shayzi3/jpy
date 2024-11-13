@@ -1,14 +1,14 @@
 
 from json_orm import (
-     JsonOrm, 
-     Column, 
+     JsonOrm,
+     Column,
      DataArgs,
      Insert,
      Select,
      Update,
-     Delete
+     Delete,
+     custom_option
 )
-
 
 
 
@@ -39,11 +39,15 @@ class Free(JsonOrm):
      
      class Data(DataArgs):
           free = True
-          
-
 
         
 if __name__ == '__main__':
+     @custom_option(model=Item)
+     def check_id(id: int) -> str:
+          return id % 2 == 0 and id > 110
+     
+     print(check_id)
+     
      # create table
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
      
@@ -65,7 +69,7 @@ if __name__ == '__main__':
      
      # Delete
      # Delete(Table).drop_table()
-     Delete(Item).drop_one_data()
+     # Delete(Item).drop_one_data()
      
      
      # Update
@@ -123,3 +127,7 @@ if __name__ == '__main__':
      
      # user = User(id=5, name='Vlad')
      # print(user.id, user.name) - 5 Vlad
+     
+     
+# Select(User).custom_options(check_id)
+# custom_options(*args: Callable)
