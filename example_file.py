@@ -46,9 +46,9 @@ if __name__ == '__main__':
      def check_id(id: int) -> bool:
           return int(id) > 170
      
-     user = Select(User).custom_options(check_id).values(User.name)
-     print(user.name)
-     
+     # user = Select(Item).where(name='Vlad')
+     # out = user.one()
+     # print(out)  
      # create table
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
      
@@ -60,8 +60,8 @@ if __name__ == '__main__':
      # print(user.name, user.id)
      
      # item = Insert(Item).values(
-     #      id=123,
-     #      name='MY',
+     #      id=321,
+     #      name='Vlad',
      #      price=100.0,
      #      quality=10
      # )

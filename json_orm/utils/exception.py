@@ -60,3 +60,8 @@ class NotFoundMetadata(Exception):
 class ReturnError(Exception):
      def __init__(self, *args: object) -> None:
           super().__init__(*args)
+          
+          
+class CallableError(Exception):
+     def __init__(self, *args: object) -> None:
+          super().__init__(*args)

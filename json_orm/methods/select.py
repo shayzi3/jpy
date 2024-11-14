@@ -7,18 +7,18 @@ from typing_extensions import (
      Generic, 
      TypeVar,
      Iterable,
-     Callable,
-     Any
+     Callable
 )
 from json_orm.utils import (
      _valide_input_data, 
      _list_or_dict,
-     BaseClass, 
-     MetaData
+     MetaData,
+     Output
 )
 from json_orm.utils.exception import (
      NotFoundMetadata, 
-     FileNotFound
+     FileNotFound,
+     CallableError
 )
 
 
@@ -29,7 +29,7 @@ ClassType = TypeVar("ClassType")
 
 
 
-class Select(BaseClass, Generic[ClassType]):
+class Select(Generic[ClassType]):
      __slots__ = (
           "__table",
           "__free",
@@ -40,7 +40,6 @@ class Select(BaseClass, Generic[ClassType]):
           "__json_obj",
           "__columns",
      )
-     
      
      def __init__(self, table: ClassType) -> None:
           dict_type = table.__dict__.get('metadata')
@@ -77,20 +76,24 @@ class Select(BaseClass, Generic[ClassType]):
                primary=self.__primary
           )
                
-     def where(self, **kwargs: dict[str, Any]) -> Self:
-          # Обозначения в self.__where_values
-          # пустой tuple - таблица free или в значении ключа data пусто
-          # пустой list - данные, которые искал пользователь не нашлись
+     def where(self, **kwargs) -> Output[ClassType]:
           if self.__free:
-               return self
-          
+               column = self.__json_obj[self.__tablename]
+               return Output(
+                    table=self.__table,
+                    data=[{key: column.get(key) for key in self.__columns}]
+               )
           data = self.__json_obj[self.__tablename]['data']
           if not data:
-               return self
-
+               return Output(
+                    table=self.__table,
+                    data=[{key: None for key in self.__columns}]
+               )
           if not kwargs:
-               self.__where_values = _list_or_dict(data)
-               return self
+               return Output(
+                    table=self.__table,
+                    data=_list_or_dict(data)
+               )
 
           self.__validate(kwargs)
           result = []
@@ -101,7 +104,11 @@ class Select(BaseClass, Generic[ClassType]):
                          primary = str(primary)
                          
                     if not data.get(primary):
-                         return self
+                         return Output(
+                              table=self.__table,
+                              data=[{key: None for key in self.__columns}]
+                         )
+                         
                     result.append(data.get(primary))
                     del kwargs[self.__primary]
                     
@@ -123,42 +130,11 @@ class Select(BaseClass, Generic[ClassType]):
                     
                     if count == len(kwargs):
                          result.append(dicts)
-                         
-          self.__where_values = result
-          return self
+          return Output(
+               table=self.__table,
+               data=result
+          )
 
-          
-     def values(self, *args: str) -> ClassType | list[ClassType] | None:
-          self.__validate(args)
-          if self.__free:
-               result = {}
-               if not args:
-                    res = self.__json_obj[self.__tablename]
-                    
-                    for key in res.keys():
-                         if key not in ['columns', 'data']:
-                              result[key] = res[key]
-               else:
-                    for free_key in args:
-                         result.update({free_key: self.__json_obj[self.__tablename][free_key]})
-               return self.__table(**result)
-          
-          if not self.__where_values:
-               return None
-
-          result = self.__where_values
-          if args:
-               result = []
-               for data in self.__where_values:
-                    beetween = {}
-                    for key in args:
-                         beetween[key] = data[key]
-                    result.append(beetween)   
-
-          if len(result) == 1:
-               return self.__table(**result[0])
-          return [self.__table(**value) for value in result]
-     
      
      def custom_options(self, *args: Callable) -> Self | None:
           if not args:
@@ -173,13 +149,16 @@ class Select(BaseClass, Generic[ClassType]):
           
           meta_function = {}
           for func_data in args:
+               if not callable(func_data):
+                    raise CallableError(f"{func_data} its not callable object")
                meta_function.update(func_data())
                
           func = meta_function.get(self.__tablename).get('function')
-          arguments = meta_function.get(self.__tablename).get('args')  
+          arguments = meta_function.get(self.__tablename).get('args')
              
           for dict_ in json_data:
-               for arg in arguments:
-                    if func(dict_.get(arg)) is True:
-                         self.__where_values.append(dict_)
+               kwargs = {key: dict_.get(key) for key in arguments}
+                    
+               if func(**kwargs) is True:
+                    self.__where_values.append(dict_)
           return self
