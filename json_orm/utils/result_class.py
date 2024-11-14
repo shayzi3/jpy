@@ -20,6 +20,10 @@ class Output(Generic[T]):
           data: list[dict[str, Any]],
      ) -> None:
           self.__table = table
+          
+          if not data:
+               column = table.__dict__.get('metadata').get('columns')
+               data = [{key: None for key in column}]
           self.__data = data
           
      def all(self) -> list[T]:

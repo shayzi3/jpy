@@ -44,7 +44,10 @@ class Free(JsonOrm):
 if __name__ == '__main__':
      @custom_option(model=User)
      def check_id(id: int) -> bool:
-          return int(id) > 170
+          return int(id) == 180
+     
+     user = Select(User).custom_options(check_id)
+     print(user.one())
      
      # user = Select(Item).where(name='Vlad')
      # out = user.one()

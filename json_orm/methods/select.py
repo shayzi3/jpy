@@ -136,13 +136,16 @@ class Select(Generic[ClassType]):
           )
 
      
-     def custom_options(self, *args: Callable) -> Self | None:
+     def custom_options(self, *args: Callable) -> Output[ClassType]:
           if not args:
-               return None
+               raise CallableError("funcs in custom_options not found")
           
           json_data = self.__json_obj[self.__tablename]['data']
           if not json_data: 
-               return self
+               return Output(
+                    table=self.__table,
+                    data=[{key: None for key in self.__columns}]
+               )
           
           if isinstance(json_data, dict):
                json_data = list(json_data.values())
@@ -156,9 +159,13 @@ class Select(Generic[ClassType]):
           func = meta_function.get(self.__tablename).get('function')
           arguments = meta_function.get(self.__tablename).get('args')
              
+          result = []
           for dict_ in json_data:
                kwargs = {key: dict_.get(key) for key in arguments}
                     
                if func(**kwargs) is True:
-                    self.__where_values.append(dict_)
-          return self
+                    result.append(dict_)
+          return Output(
+               table=self.__table,
+               data=result
+          )
