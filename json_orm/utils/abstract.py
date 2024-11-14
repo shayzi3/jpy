@@ -8,11 +8,6 @@ from json_orm.utils.exception import TableColumnNotExists
 
 
 
-__all__ = (
-     "BaseClass",
-     "MetaOrm",
-)
-
 
 class BaseClass(ABC):
 

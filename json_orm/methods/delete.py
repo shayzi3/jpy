@@ -24,9 +24,6 @@ from json_orm.utils.exception import (
 
 
 
-__all__ = (
-     "Delete",
-)
 ClassType = TypeVar("ClassType")
 
 

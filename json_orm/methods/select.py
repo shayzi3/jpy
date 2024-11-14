@@ -22,9 +22,6 @@ from json_orm.utils.exception import (
 )
 
 
-__all__ = (
-     "Select",
-)
 ClassType = TypeVar("ClassType")
 
 

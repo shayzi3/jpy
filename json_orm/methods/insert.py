@@ -15,9 +15,7 @@ from json_orm.utils.exception import (
 )
 
 
-__all__ = (
-     "Insert",
-)
+
 ClassType = TypeVar('ClassType')
 
 

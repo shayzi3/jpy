@@ -23,9 +23,6 @@ from json_orm.utils.exception import (
 
 
 
-__all__ = (
-     "Update",
-)
 ClassType = TypeVar("ClassType")
 
 

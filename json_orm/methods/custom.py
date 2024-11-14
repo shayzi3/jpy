@@ -9,10 +9,6 @@ from json_orm.utils.exception import (
 )
 
 
-__all__ = (
-     "custom_option",
-)
-
 
 def custom_option(model: type) -> Callable[[], dict]:
      def decorator(func: Callable) -> Callable[[], dict]:

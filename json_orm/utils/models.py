@@ -1,10 +1,6 @@
 from pydantic import BaseModel
 
 
-__all__ = (
-     "MetaData",
-)
-
 
 class MetaData(BaseModel):
      """
