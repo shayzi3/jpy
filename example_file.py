@@ -46,8 +46,11 @@ if __name__ == '__main__':
      def check_id(id: int) -> bool:
           return int(id) == 180
      
-     user = Select(User).custom_options(check_id)
-     print(user.one())
+     @custom_option(model=Item)
+     def check_price(price: int, name: str) -> bool:
+          return name == 'Vlad' or price == 222
+     
+     # user = Select(User).custom_options(check_id)
      
      # user = Select(Item).where(name='Vlad')
      # out = user.one()
@@ -77,7 +80,8 @@ if __name__ == '__main__':
      
      
      # Update
-     # print(Update(Item).where(id=777).values(name='Armen', price=222))
+     # print(Update(Item).where(id=123).values(name='Armen', price=222))
+     # print(Update(Item).custom_options(check_price).values(name='Cooper'))
      # print(Update(Item).where().values(price=500))
      # print(Update(User).where(id=555).values(name='Vladlen'))
      # print(Update(User).where(id=180).values(id=150, name='NEW_ID'))

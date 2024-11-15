@@ -3,10 +3,9 @@ import os
 
 
 from typing_extensions import (
-     Generic,
-     TypeVar,
      Self,
-     Iterable
+     Iterable,
+     Callable
 )
 from json_orm.utils import (
      MetaData,
@@ -18,18 +17,16 @@ from json_orm.utils import (
 )
 from json_orm.utils.exception import (
      NotFoundMetadata,
-     FileNotFound
+     FileNotFound,
+     CallableError
 )
 
 
 
-ClassType = TypeVar("ClassType")
 
 
-
-class Update(BaseClass, Generic[ClassType]):
+class Update(BaseClass):
      __slots__ = (
-          "__table",
           "__tablename",
           "__free",
           "__path",
@@ -39,14 +36,13 @@ class Update(BaseClass, Generic[ClassType]):
           "__where_values",
      )
      
-     def __init__(self, table: ClassType) -> None:
+     def __init__(self, table: type) -> None:
           dict_type = table.__dict__.get('metadata')
           if dict_type:
                type_ = MetaData(**dict_type)
           else:
                raise NotFoundMetadata(f"Metadata about class {table.__class__.__name__} not found.")
           
-          self.__table = table
           self.__tablename = type_.tablename
           self.__free = type_.free
           self.__path = type_.path
@@ -91,10 +87,35 @@ class Update(BaseClass, Generic[ClassType]):
                primary_key=self.__primary
           )
           return self
-          
-          
      
-     def values(self, **kwargs) -> ClassType | None:
+     
+     def custom_options(self, option: Callable) -> Self:
+          if self.__free:
+               return self
+          
+          data = self.__json_obj[self.__tablename]['data']
+          if not data:
+               return self
+          
+          if not callable(option):
+               raise CallableError(f"{option} its not callable")
+          meta_function = option()
+          
+          arguments = meta_function.get(self.__tablename).get('args')
+          func = meta_function.get(self.__tablename).get('function')
+          
+          for index in range(len(data)):
+               kwargs = {key: data[index].get(key) for key in arguments}
+                    
+               if func(**kwargs) is True:
+                    if self.__primary:
+                         self.__where_values.append({data[index].get(self.__primary): data[index]})
+                    
+                    else:
+                         self.__where_values.append({index: data[index]})
+          return self
+          
+     def values(self, **kwargs) -> None:
           if not kwargs:
                return None
           
@@ -136,7 +157,7 @@ class Update(BaseClass, Generic[ClassType]):
                obj=self.__json_obj,
                path=self.__path
           )
-          return self.__table(**kwargs)
+          return None
                          
                     
                     

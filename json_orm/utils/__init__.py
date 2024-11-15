@@ -8,7 +8,7 @@ from .checking import (
 from .abstract import BaseClass, MetaOrm
 from .enums import Mode
 from .models import MetaData
-from .result_class import Output
+from .output import Output
 
 
 __all__ = [
@@ -21,5 +21,5 @@ __all__ = [
      "MetaOrm",
      "Mode",
      "MetaData",
-     "Output",
+     "Output"
 ]

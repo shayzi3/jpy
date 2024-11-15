@@ -15,9 +15,7 @@ from json_orm.utils.exception import (
 )
 
 
-
 ClassType = TypeVar('ClassType')
-
 
 class Insert(Generic[ClassType]):
      __slots__ = (

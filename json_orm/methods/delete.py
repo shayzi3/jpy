@@ -103,8 +103,6 @@ class Delete(Generic[ClassType]):
                path=self.__path
           )
           
-          
-     
      def drop_table(self) -> None:
           del self.__json_obj[self.__tablename]
           

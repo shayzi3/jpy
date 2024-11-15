@@ -103,7 +103,7 @@ def _where_for_update_and_delete(
                     return None
                result.append({primary: data.get(primary)})
                del kwargs[primary_key]
-                    
+                     
           if kwargs:
                if result:
                     for index in range(len(result)):
@@ -124,8 +124,6 @@ def _where_for_update_and_delete(
                if count == len(kwargs):
                     result.append({index: data[index]})
      return result
-
-
 
 def _save(obj: dict[str, Any], path: str) -> None:
      with open(path, 'w', encoding='utf-8') as file:

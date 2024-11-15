@@ -3,7 +3,6 @@ import os
 
 
 from typing_extensions import (
-     Self, 
      Generic, 
      TypeVar,
      Iterable,
@@ -32,7 +31,6 @@ class Select(Generic[ClassType]):
           "__free",
           "__path",
           "__primary",
-          "__where_values",
           "__tablename",
           "__json_obj",
           "__columns",
@@ -51,7 +49,6 @@ class Select(Generic[ClassType]):
           self.__path = type_.path
           self.__primary = type_.primary
           self.__columns = type_.columns
-          self.__where_values = []
           
           if isinstance(self.__primary, int):
                self.__primary = str(self._primary)
@@ -133,10 +130,7 @@ class Select(Generic[ClassType]):
           )
 
      
-     def custom_options(self, *args: Callable) -> Output[ClassType]:
-          if not args:
-               raise CallableError("funcs in custom_options not found")
-          
+     def custom_options(self, option: Callable) -> Output[ClassType]:
           json_data = self.__json_obj[self.__tablename]['data']
           if not json_data: 
                return Output(
@@ -147,11 +141,9 @@ class Select(Generic[ClassType]):
           if isinstance(json_data, dict):
                json_data = list(json_data.values())
           
-          meta_function = {}
-          for func_data in args:
-               if not callable(func_data):
-                    raise CallableError(f"{func_data} its not callable object")
-               meta_function.update(func_data())
+          if not callable(option):
+               raise CallableError(f"{option} its not callable object")
+          meta_function = option()
                
           func = meta_function.get(self.__tablename).get('function')
           arguments = meta_function.get(self.__tablename).get('args')

@@ -2,20 +2,16 @@ from typing_extensions import Any, TypeVar, Generic
 
 
 
-T = TypeVar("T")
+ClassType = TypeVar("T")
 
 
-class Output(Generic[T]):
+class Output(Generic[ClassType]):
      __slots__ = (
           "__table",
           "__data",
      )
      
-     def __init__(
-          self, 
-          table: T, 
-          data: list[dict[str, Any]],
-     ) -> None:
+     def __init__(self, table: ClassType, data: list[dict[str, Any]]) -> None:
           self.__table = table
           
           if not data:
@@ -23,8 +19,8 @@ class Output(Generic[T]):
                data = [{key: None for key in column}]
           self.__data = data
           
-     def all(self) -> list[T]:
+     def all(self) -> list[ClassType]:
           return [self.__table(**kwargs) for kwargs in self.__data]
      
-     def one(self) -> T:
+     def one(self) -> ClassType:
           return self.__table(**self.__data[0])
