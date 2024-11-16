@@ -43,12 +43,12 @@ class Free(JsonOrm):
         
 if __name__ == '__main__':
      @custom_option(model=User)
-     def check_id(id: int) -> bool:
-          return int(id) == 180
+     def check_id(name: str) -> bool:
+          return name == 'Vasya'
      
      @custom_option(model=Item)
-     def check_price(price: int, name: str) -> bool:
-          return name == 'Vlad' or price == 222
+     def check_price(price: int) -> bool:
+          return price == 100
      
      # user = Select(User).custom_options(check_id)
      
@@ -77,13 +77,15 @@ if __name__ == '__main__':
      # Delete
      # Delete(Table).drop_table()
      # Delete(Item).drop_one_data()
+     # Delete(Item).drop_one_data(price=222)
+     Delete(Item).drop_one_data_option(check_price)
      
      
      # Update
      # print(Update(Item).where(id=123).values(name='Armen', price=222))
      # print(Update(Item).custom_options(check_price).values(name='Cooper'))
      # print(Update(Item).where().values(price=500))
-     # print(Update(User).where(id=555).values(name='Vladlen'))
+     # print(Update(User).custom_options(check_id).values(name='Column', id=180))
      # print(Update(User).where(id=180).values(id=150, name='NEW_ID'))
      # print(Update(Free).values())
      

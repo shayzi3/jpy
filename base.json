@@ -4,16 +4,7 @@
             "name",
             "id"
         ],
-        "data": {
-            "180": {
-                "id": "180",
-                "name": "Colum"
-            },
-            "150": {
-                "id": "150",
-                "name": "Vasya"
-            }
-        }
+        "data": {}
     },
     "Item": {
         "columns": [
@@ -22,20 +13,7 @@
             "price",
             "id"
         ],
-        "data": [
-            {
-                "id": 123,
-                "name": "Cooper",
-                "price": 222,
-                "quality": 10
-            },
-            {
-                "id": 321,
-                "name": "Cooper",
-                "price": 100.0,
-                "quality": 10
-            }
-        ]
+        "data": []
     },
     "Free": {
         "status": true

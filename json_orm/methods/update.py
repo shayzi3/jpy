@@ -97,6 +97,9 @@ class Update(BaseClass):
           if not data:
                return self
           
+          if isinstance(data, dict):
+               data = list(data.values())
+          
           if not callable(option):
                raise CallableError(f"{option} its not callable")
           meta_function = option()
@@ -149,6 +152,9 @@ class Update(BaseClass):
                          self.__json_obj[self.__tablename]['data'][key] = value
                          
                          if primary_key_changed:
+                              if isinstance(primary_key_changed, int):
+                                   primary_key_changed = str(primary_key_changed)
+                                   
                               del self.__json_obj[self.__tablename]['data'][primary_key_changed]
                          
                     elif isinstance(key, int):
