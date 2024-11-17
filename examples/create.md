@@ -60,21 +60,6 @@ path = base.json
 free = False
 ```
 
-Initially, 'Data' can be omitted
-
-```python
-
-class Item(JsonOrm):
-     id: Column
-     item_name: Column
-     price: Column
-
-if __name__ == '__main__':
-     JsonOrm.create_tables()
-
-```
-
-
 ```python
 tablename: str
 # Name table. If you dont hint of name table, then the name of your table will be taken from the name of the model itself.
@@ -89,6 +74,19 @@ free: bool
 # If these argument 'True', that its not a model
 ```
 
+Initially, 'Data' can be omitted
+
+```python
+
+class Item(JsonOrm):
+     id: Column
+     item_name: Column
+     price: Column
+
+if __name__ == '__main__':
+     JsonOrm.create_tables()
+
+```
 
 Create free model
 ```python
@@ -106,7 +104,7 @@ if __name__ == '__main__':
      JsonOrm.create_tables(FreeTable)
 ```
 
-# And after start this code in file 'base.json' will ↓
+And after start this code in file 'base.json' will ↓
 
 ```json
 {
@@ -118,7 +116,7 @@ if __name__ == '__main__':
 
 ```
 
-# Also if you point tablename 'users', but its table exists that ↓
+Also if you point tablename 'users', but its table exists that ↓
 
 ```json
 {
