@@ -48,7 +48,7 @@ class MetaOrm(type):
                     functions[key] = value
                     
           attrs = {
-               key: key for key in metadata['columns']
+               key: f'__{key}__' for key in metadata['columns']
           }
           attrs.update(functions)
           attrs.update({'metadata': metadata})

@@ -11,7 +11,7 @@ A library for interacting with json files. Creating models in these files and co
 ```cmd
   pip install json_orm
 ```
-    
+
 ### Documentation
 
 [Documentation](https://github.com/shayzi3/json_orm/tree/master/examples)

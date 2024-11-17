@@ -4,7 +4,20 @@
             "name",
             "id"
         ],
-        "data": {}
+        "data": {
+            "551": {
+                "id": 551,
+                "name": "Maks"
+            },
+            "873": {
+                "id": 873,
+                "name": "Sos"
+            },
+            "523": {
+                "id": 523,
+                "name": "__name__"
+            }
+        }
     },
     "Item": {
         "columns": [
@@ -13,9 +26,22 @@
             "price",
             "id"
         ],
-        "data": []
+        "data": [
+            {
+                "id": 321,
+                "name": "Vlad",
+                "price": 100.0,
+                "quality": 10
+            },
+            {
+                "id": 123,
+                "name": "Vlad",
+                "price": 15,
+                "quality": 1
+            }
+        ]
     },
     "Free": {
-        "status": true
+        "status": false
     }
 }

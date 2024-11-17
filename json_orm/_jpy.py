@@ -27,7 +27,7 @@ class DataArgs:
 class JsonOrm(metaclass=MetaOrm):
      def __init__(self, **kwargs) -> None:
           if kwargs:
-               columns: list[str] = self.metadata.get('columns')
+               columns: list[str] = self.metadata.get('columns')  # Metadata from model
                if columns:
                     for kw_key, value in kwargs.items():
                          if kw_key in columns:
@@ -39,15 +39,15 @@ class JsonOrm(metaclass=MetaOrm):
           if args:
                iterable = [dict_.__dict__ for dict_ in args]
           else:
-               iterable = cls.__metadata__
+               iterable = cls.__metadata__  # From class MetaOrm
                
           pathes = {key.get('metadata').get('path'): {} for key in iterable}
           for data in iterable:
                meta = data.get('metadata')                    
                
                tablename = meta.get('tablename')
-               if meta.get('tablename') not in pathes[meta.get('path')]:
-                    # Create with tablename
+               if tablename not in pathes[meta.get('path')]:
+                    # Create with tablename. model not exists
                     if meta.get('free') is True:
                          pathes[meta.get('path')].update({
                                    tablename: {key: None for key in meta.get('columns')}
@@ -62,7 +62,7 @@ class JsonOrm(metaclass=MetaOrm):
                               }
                          )
                else: 
-                    # Create without tablename
+                    # Create without tablename. model exists
                     if meta.get('free') is True:
                          pathes[meta.get('path')][tablename].update(
                               {key: None for key in meta.get('columns')}
@@ -78,9 +78,12 @@ class JsonOrm(metaclass=MetaOrm):
                with open(key, 'w', encoding='utf-8') as file:
                     json.dump(value, file, indent=4)
      
-     
      def __len__(self) -> int:
-          ...
+          meta = getattr(self, 'metadata')
+          
+          with open(meta.get('path'), 'r') as file:
+               data = json.loads(file.read())
+          return len(data[meta.get('tablename')]['data'])
           
           
      @classmethod
@@ -95,7 +98,7 @@ class JsonOrm(metaclass=MetaOrm):
           if meta:
                string = ''
                for key in meta.get('columns'):
-                    if key != getattr(self, key):
+                    if f'__{key}__' != getattr(self, key):
                          string += f'{key}={getattr(self, key)} '
                     
                return f'{name}({string.strip()})'

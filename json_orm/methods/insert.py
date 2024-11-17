@@ -62,10 +62,11 @@ class Insert(Generic[ClassType]):
           )
           if not self.__free:
                if self.__primary:
-                    if isinstance(kwargs[self.__primary], int):
-                         kwargs[self.__primary] = str(kwargs[self.__primary])
+                    primary = kwargs[self.__primary]
+                    if isinstance(primary, int):
+                         primary = str(primary)
                          
-                    self.__json_obj[self.__tablename]['data'][kwargs[self.__primary]] = {
+                    self.__json_obj[self.__tablename]['data'][primary] = {
                          key: value for key, value in kwargs.items()
                     }
                else:

@@ -42,43 +42,31 @@ class Free(JsonOrm):
 
         
 if __name__ == '__main__':
-     @custom_option(model=User)
-     def check_id(name: str) -> bool:
-          return name == 'Vasya'
-     
-     @custom_option(model=Item)
-     def check_price(price: int) -> bool:
-          return price == 100
-     
-     # user = Select(User).custom_options(check_id)
-     
-     # user = Select(Item).where(name='Vlad')
-     # out = user.one()
-     # print(out)  
+     ...
      # create table
      # JsonOrm.create_tables() # or JsonOrm.create_tables(User, Item)
      
      # Insert
      # user = Insert(User).values(
-     #      id=150,
-     #      name='Vasya'
+     #      id=523,
+     #      name='__name__'
      # )
      # print(user.name, user.id)
      
      # item = Insert(Item).values(
-     #      id=321,
+     #      id=123,
      #      name='Vlad',
-     #      price=100.0,
-     #      quality=10
+     #      price=15,
+     #      quality=1
      # )
-     # insert = Insert(Free).values(status=True)
+     # insert = Insert(Free).values(status=False)
      
      
      # Delete
      # Delete(Table).drop_table()
      # Delete(Item).drop_one_data()
      # Delete(Item).drop_one_data(price=222)
-     Delete(Item).drop_one_data_option(check_price)
+     # Delete(Item).drop_one_data_option(check_price)
      
      
      # Update
@@ -89,10 +77,25 @@ if __name__ == '__main__':
      # print(Update(User).where(id=180).values(id=150, name='NEW_ID'))
      # print(Update(Free).values())
      
-     # Select     
-     # select = Select(Item).where(id=172).values()
-     # free = Select(Free).values()
-     # print(select.name, free.status)
+     # Select    
+     # @custom_option(model=User)
+     # def checker(id: int) -> bool:
+     #      return id == 523
+     
+     # @custom_option(model=Item)
+     # def checker(id: int, name: str) -> bool:
+     #      return name == 'Vlad'
+     
+     # select = Select(User).where(name='Maks', id=552)
+     # print(select.one())
+     # select = Select(Item).where(name='Vlad').all()
+     # print(select)
+     # select = Select(User).custom_options(checker).one()
+     # print(select)
+     # select = Select(Item).custom_options(checker).one()
+     # print(select.id)
+     # print(len(Item()))
+     # print(len(User()))
      
      # item = Select(Item).where(quality=10).values()
      # if isinstance(item, list):
@@ -120,8 +123,8 @@ if __name__ == '__main__':
      
      
      # Item - {
-          # 'id': None, 
-          # 'name': None, 
+          # 'id': 'id', 
+          # 'name': 'name', 
           # 'price': None, 
           # 'quality': None, 
           # 'metadata': {
