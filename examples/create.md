@@ -49,7 +49,7 @@ it just serves as a hint about the settings of the table.
 
 ## Settings in 'Data'
 
-Important! It is necessary that the class for specifying model settings be called 'Data'
+`Important! It is necessary that the class for specifying model settings be called 'Data'`
 
 
 # Default values of settings:

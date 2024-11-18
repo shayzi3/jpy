@@ -7,3 +7,5 @@ venv/
 my.py
 exam.py
 new.json
+dist/
+json_orm.egg-info
