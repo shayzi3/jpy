@@ -3,6 +3,7 @@
 __pycache__
 .pytest_cache
 tests/test_tst.py
-json_orm/main.py
 venv/
 my.py
+exam.py
+new.json
