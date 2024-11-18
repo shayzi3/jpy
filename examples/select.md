@@ -47,13 +47,13 @@ return 'User not found.'
 ## class: Output
 This class accepts a model and sorted data as input.
 
-# method: one()
-returns: type[Model]
+## method: one()
+returns: ```type[Model]```
 
 Returns the first element of the sorted data.
 
-# method: all()
-returns: list[type[Model]]
+## method: all()
+returns: ```list[type[Model]]```
 
 Returns all elements of the sorted data.
 
@@ -62,15 +62,15 @@ Returns all elements of the sorted data.
 ## class: Select
 This class accepts a model as input.
 
-# method: where(**kwargs)
-returns: Output[type[Model]]
+## method: where(**kwargs)
+returns: ```Output[type[Model]]```
 
 This method extracts melons from a json file.
 `Important! This method only compares the data.`
 
 
-# method: custom_options(option)
-returns: Output[type[Model]]
+## method: custom_options(option)
+returns: ```Output[type[Model]]```
 
 This method accepts a function in which you can specify your own validation.
 
@@ -91,7 +91,7 @@ print(
      user.lvl
 )
 ```
-*The function validate_user accepts columns as input, which are located in the model User.*
+`The function validate_user accepts columns as input, which are located in the model User.`
 `Important! Function validate_user must return boolean type.`
 
 
