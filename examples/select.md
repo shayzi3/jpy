@@ -44,7 +44,7 @@ return 'User not found.'
 ```
 
 
-## class: Output
+# class: Output
 This class accepts a model and sorted data as input.
 
 ## method: one()
@@ -59,7 +59,7 @@ Returns all elements of the sorted data.
 
 
 
-## class: Select
+# class: Select
 This class accepts a model as input.
 
 ## method: where(**kwargs)
