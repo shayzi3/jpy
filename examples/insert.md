@@ -16,6 +16,7 @@ print(
      user.money,
      user.lvl
 )
+# 909 shayzi3 0 0
 ```
 # class: Insert
 This class accepts a model as input.
