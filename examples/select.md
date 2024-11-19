@@ -93,8 +93,3 @@ print(
 ```
 `The function validate_user accepts columns as input, which are located in the model User.`
 `Important! Function validate_user must return boolean type.`
-
-
-
-
-
