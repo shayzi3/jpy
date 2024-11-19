@@ -1,5 +1,5 @@
 
-from typing_extensions import Callable
+from typing_extensions import Callable, Any
 from functools import wraps
 
 from json_orm.utils.exception import (
@@ -10,16 +10,12 @@ from json_orm.utils.exception import (
 
 
 
-def custom_option(model: type) -> Callable[[], dict]:
+def custom_option(model: type, return_success_type: Any = True) -> Callable[[], dict]:
      def decorator(func: Callable) -> Callable[[], dict]:
           
           @wraps(func)
           def wrapper() -> dict:
-               nonlocal model
-               
-               if func.__annotations__.get('return'):
-                    if not issubclass(func.__annotations__.get('return'), bool):
-                         raise ReturnError(f"Function {func.__name__} must return bool type")
+               nonlocal model, return_success_type
                
                metadata = model.__dict__.get('metadata')
                if not metadata:
@@ -34,7 +30,8 @@ def custom_option(model: type) -> Callable[[], dict]:
                return {
                     metadata.get('tablename'): {
                          'args': func.__code__.co_varnames,
-                         'function': func
+                         'function': func,
+                         'return_type': return_success_type
                     }
                }
           return wrapper

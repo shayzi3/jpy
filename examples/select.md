@@ -92,4 +92,4 @@ print(
 )
 ```
 `The function validate_user accepts columns as input, which are located in the model User.`
-`Important! Function validate_user must return boolean type.`
+Read about the additional custom option feature [here](https://github.com/shayzi3/json_orm/blob/master/examples/other.md).

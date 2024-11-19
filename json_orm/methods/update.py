@@ -106,11 +106,12 @@ class Update(BaseClass):
           
           arguments = meta_function.get(self.__tablename).get('args')
           func = meta_function.get(self.__tablename).get('function')
+          return_type = meta_function.get(self.__tablename).get('return_type')
           
           for index in range(len(data)):
                kwargs = {key: data[index].get(key) for key in arguments}
                     
-               if func(**kwargs) is True:
+               if func(**kwargs) == return_type:
                     if self.__primary:
                          self.__where_values.append({data[index].get(self.__primary): data[index]})
                     

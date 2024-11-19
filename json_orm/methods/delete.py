@@ -117,12 +117,13 @@ class Delete:
           
           arguments = meta_function.get(self.__tablename).get('args')
           func = meta_function.get(self.__tablename).get('function')
+          return_type = meta_function.get(self.__tablename).get('return_type')
           
           iter_data = data.copy()
           for index in range(len(iter_data)):
                kwargs = {key: iter_data[index].get(key) for key in arguments}
                    
-               if func(**kwargs) is True:
+               if func(**kwargs) == return_type:
                     if self.__primary:
                          index = iter_data[index].get(self.__primary)
                          if isinstance(index, int):

@@ -66,9 +66,9 @@ class Insert(Generic[ClassType]):
                     if isinstance(primary, int):
                          primary = str(primary)
                          
-                    self.__json_obj[self.__tablename]['data'][primary] = {
-                         key: value for key, value in kwargs.items()
-                    }
+                    self.__json_obj[self.__tablename]['data'].update({
+                         primary: {key: value for key, value in kwargs.items()}
+                    })
                else:
                     self.__json_obj[self.__tablename]['data'].append({
                               key: value for key, value in kwargs.items()
@@ -77,7 +77,6 @@ class Insert(Generic[ClassType]):
           else:
                for key, value in kwargs.items():
                     self.__json_obj[self.__tablename][key] = value
-                    
           _save(
                obj=self.__json_obj,
                path=self.__path

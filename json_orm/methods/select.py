@@ -147,12 +147,13 @@ class Select(Generic[ClassType]):
                
           func = meta_function.get(self.__tablename).get('function')
           arguments = meta_function.get(self.__tablename).get('args')
+          return_type = meta_function.get(self.__tablename).get('return_type')
              
           result = []
           for dict_ in json_data:
                kwargs = {key: dict_.get(key) for key in arguments}
                     
-               if func(**kwargs) is True:
+               if func(**kwargs) == return_type:
                     result.append(dict_)
           return Output(
                table=self.__table,
