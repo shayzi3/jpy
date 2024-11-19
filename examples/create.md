@@ -87,6 +87,14 @@ if __name__ == '__main__':
      JsonOrm.create_tables()
 
 ```
+```json
+{
+     "Item": {
+          "columns": ["id", "item_name", "price"],
+          "data": []
+     }
+}
+```
 
 Create free model
 ```python
