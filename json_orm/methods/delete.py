@@ -10,12 +10,13 @@ from json_orm.utils import (
      MetaData,
      _valide_input_data,
      _save,
+     _custom,
+     _get_custom_args
 )
 from json_orm.utils.exception import (
      NotFoundMetadata,
      FileNotFound,
-     TableNotExists,
-     CallableError
+     TableNotExists
 )
 
 
@@ -67,9 +68,6 @@ class Delete:
           
           
      def drop_one_data(self, **kwargs) -> None:
-          if self.__free:
-               return None
-          
           data = self.__json_obj[self.__tablename]['data']
           if not data or self.__free or not kwargs:
                return None
@@ -101,27 +99,19 @@ class Delete:
           )
           
      def drop_one_data_option(self, option: Callable) -> None:
-          if self.__free:
-               return None
-          
           data = self.__json_obj[self.__tablename]['data']
-          if not data:
+          if not data or self.__free:
                return None
-          
-          if isinstance(data, dict):
-               data = list(data.values())
-          
-          if not callable(option):
-               raise CallableError(f"{option} its not callable")
-          meta_function = option()
-          
-          arguments = meta_function.get(self.__tablename).get('args')
-          func = meta_function.get(self.__tablename).get('function')
-          return_type = meta_function.get(self.__tablename).get('return_type')
+     
+          meta_function, data = _custom(data, option)
+          args, func, return_type = _get_custom_args(
+               data=meta_function,
+               tablename=self.__tablename
+          )
           
           iter_data = data.copy()
           for index in range(len(iter_data)):
-               kwargs = {key: iter_data[index].get(key) for key in arguments}
+               kwargs = {key: iter_data[index].get(key) for key in args}
                    
                if func(**kwargs) == return_type:
                     if self.__primary:
@@ -129,9 +119,9 @@ class Delete:
                          if isinstance(index, int):
                               index = str(index)
                          del self.__json_obj[self.__tablename]['data'][index]
-                    
                     else:
                          self.__json_obj[self.__tablename]['data'].pop(index)
+                    
           return _save(
                obj=self.__json_obj,
                path=self.__path

@@ -1,19 +1,27 @@
 import json
 
-from typing_extensions import Any, Iterable
+from typing_extensions import (
+     Any, 
+     Sequence, 
+     Callable,
+     TypeVar
+)
 from json_orm.utils.enums import Mode
 from json_orm.utils.exception import (
      TableNotExists,
      TableColumnNotExists,
      RequiredArgument,
      PrimaryNotExists,
-     JsonFileEmpty
+     JsonFileEmpty,
+     CallableError
 )
+
+T = TypeVar("T")
 
 
 
 def _valide_input_data(
-     data: Iterable,
+     data: Sequence,
      json_file: dict[str, Any],
      table_name: str,
      free: bool,
@@ -87,7 +95,7 @@ def _attrs_data_class(
 
 
 def _where_for_update_and_delete(
-     data: Iterable,
+     data: Sequence,
      kwargs: dict[str, Any],
      primary_key: str | None
 ) -> list[dict[str, dict]] | type:
@@ -131,7 +139,35 @@ def _save(obj: dict[str, Any], path: str) -> None:
      return None
           
           
-def _list_or_dict(obj: Iterable) -> list[dict[str, Any]]:
+def _list_or_dict(obj: Sequence) -> list[dict[str, Any]]:
      if isinstance(obj, dict):
           return list(obj.values())
      return obj
+
+
+
+def _custom(
+     data: Sequence,
+     option: Callable,
+) -> tuple[
+     dict[str, dict[str, Any]], 
+     list[dict[str, Any]]]:
+     
+     if isinstance(data, dict):
+          data = list(data.values())
+          
+     if not callable(option) and not isinstance(option, type):
+          raise CallableError(f"{option} its not callable object")
+     return option(), data
+
+
+def _get_custom_args(
+     data: dict[str, dict[str, Any]],
+     tablename: str
+) -> tuple:
+
+     arguments = data.get(tablename).get('args')
+     func = data.get(tablename).get('function')
+     return_type = data.get(tablename).get('return_type')
+     
+     return arguments, func, return_type

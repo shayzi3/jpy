@@ -9,23 +9,23 @@ from typing_extensions import (
 )
 from json_orm.utils import (
      MetaData,
-     BaseClass,
      _save,
      _list_or_dict,
      _valide_input_data,
-     _where_for_update_and_delete
+     _where_for_update_and_delete,
+     _custom,
+     _get_custom_args
 )
 from json_orm.utils.exception import (
      NotFoundMetadata,
      FileNotFound,
-     CallableError
 )
 
 
 
 
 
-class Update(BaseClass):
+class Update:
      __slots__ = (
           "__tablename",
           "__free",
@@ -90,31 +90,22 @@ class Update(BaseClass):
      
      
      def custom_options(self, option: Callable) -> Self:
-          if self.__free:
-               return self
-          
           data = self.__json_obj[self.__tablename]['data']
-          if not data:
+          if not data or self.__free:
                return self
           
-          if isinstance(data, dict):
-               data = list(data.values())
-          
-          if not callable(option):
-               raise CallableError(f"{option} its not callable")
-          meta_function = option()
-          
-          arguments = meta_function.get(self.__tablename).get('args')
-          func = meta_function.get(self.__tablename).get('function')
-          return_type = meta_function.get(self.__tablename).get('return_type')
+          meta_function, data = _custom(data, option)
+          args, func, return_type = _get_custom_args(
+               data=meta_function,
+               tablename=self.__tablename
+          )
           
           for index in range(len(data)):
-               kwargs = {key: data[index].get(key) for key in arguments}
+               kwargs = {key: data[index].get(key) for key in args}
                     
                if func(**kwargs) == return_type:
                     if self.__primary:
                          self.__where_values.append({data[index].get(self.__primary): data[index]})
-                    
                     else:
                          self.__where_values.append({index: data[index]})
           return self
@@ -160,11 +151,10 @@ class Update(BaseClass):
                          
                     elif isinstance(key, int):
                          self.__json_obj[self.__tablename]['data'][key] = value
-          _save(
+          return _save(
                obj=self.__json_obj,
                path=self.__path
           )
-          return None
                          
                     
                     

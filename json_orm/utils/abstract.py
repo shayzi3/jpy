@@ -1,25 +1,8 @@
 
 import json_orm as orm
 
-from abc import ABC, abstractmethod
-
 from .checking import _attrs_data_class
 from json_orm.utils.exception import TableColumnNotExists
-
-
-
-
-class BaseClass(ABC):
-
-     @abstractmethod
-     def where(self):
-          ...
-          
-          
-     @abstractmethod
-     def values(self):
-          ...
-        
            
           
 class MetaOrm(type):

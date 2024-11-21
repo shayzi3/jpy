@@ -12,14 +12,14 @@ from json_orm.utils import (
      _valide_input_data, 
      _list_or_dict,
      MetaData,
-     Output
+     Output,
+     _custom,
+     _get_custom_args
 )
 from json_orm.utils.exception import (
      NotFoundMetadata, 
-     FileNotFound,
-     CallableError
+     FileNotFound
 )
-
 
 ClassType = TypeVar("ClassType")
 
@@ -138,20 +138,15 @@ class Select(Generic[ClassType]):
                     data=[{key: None for key in self.__columns}]
                )
           
-          if isinstance(json_data, dict):
-               json_data = list(json_data.values())
-          
-          if not callable(option):
-               raise CallableError(f"{option} its not callable object")
-          meta_function = option()
-               
-          func = meta_function.get(self.__tablename).get('function')
-          arguments = meta_function.get(self.__tablename).get('args')
-          return_type = meta_function.get(self.__tablename).get('return_type')
+          meta_function, json_data = _custom(json_data, option)
+          args, func, return_type = _get_custom_args(
+               data=meta_function,
+               tablename=self.__tablename
+          )
              
           result = []
           for dict_ in json_data:
-               kwargs = {key: dict_.get(key) for key in arguments}
+               kwargs = {key: dict_.get(key) for key in args}
                     
                if func(**kwargs) == return_type:
                     result.append(dict_)

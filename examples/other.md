@@ -15,11 +15,6 @@ User() + {
 }
 ```
 
-### Async
-
-soon...
-
-
 ### custom_option
 
 argument: return_success_type: Any = True
