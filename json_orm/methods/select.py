@@ -131,6 +131,13 @@ class Select(Generic[ClassType]):
 
      
      def custom_options(self, option: Callable) -> Output[ClassType]:
+          if self.__free:
+               column = self.__json_obj[self.__tablename]
+               return Output(
+                    table=self.__table,
+                    data=[{key: column.get(key) for key in self.__columns}]
+               )
+               
           json_data = self.__json_obj[self.__tablename]['data']
           if not json_data: 
                return Output(

@@ -3,8 +3,7 @@ import json
 from typing_extensions import (
      Any, 
      Sequence, 
-     Callable,
-     TypeVar
+     Callable
 )
 from json_orm.utils.enums import Mode
 from json_orm.utils.exception import (
@@ -15,10 +14,6 @@ from json_orm.utils.exception import (
      JsonFileEmpty,
      CallableError
 )
-
-T = TypeVar("T")
-
-
 
 def _valide_input_data(
      data: Sequence,

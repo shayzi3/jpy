@@ -68,8 +68,10 @@ class Delete:
           
           
      def drop_one_data(self, **kwargs) -> None:
+          if self.__free: return None
+          
           data = self.__json_obj[self.__tablename]['data']
-          if not data or self.__free or not kwargs:
+          if not data or not kwargs:
                return None
                     
           self.__valide(kwargs)
@@ -99,8 +101,10 @@ class Delete:
           )
           
      def drop_one_data_option(self, option: Callable) -> None:
+          if self.__free: return None
+          
           data = self.__json_obj[self.__tablename]['data']
-          if not data or self.__free:
+          if not data:
                return None
      
           meta_function, data = _custom(data, option)
@@ -137,8 +141,9 @@ class Delete:
           )
      
      def drop_data(self) -> None:
-          type_data = self.__json_obj[self.__tablename]['data']
+          if self.__free: return None
           
+          type_data = self.__json_obj[self.__tablename]['data']
           if isinstance(type_data, dict):
                self.__json_obj[self.__tablename]['data'] = {}
           

@@ -30,7 +30,7 @@ And this class is columns with their new values.
 
 `Important! Model where Free is True dont have method 'where'`
 
-
+With use custom option
 ```python
 from json_orm import custom_option
 

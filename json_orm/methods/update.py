@@ -90,8 +90,10 @@ class Update:
      
      
      def custom_options(self, option: Callable) -> Self:
+          if self.__free: return None
+          
           data = self.__json_obj[self.__tablename]['data']
-          if not data or self.__free:
+          if not data:
                return self
           
           meta_function, data = _custom(data, option)
