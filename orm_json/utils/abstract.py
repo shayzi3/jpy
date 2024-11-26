@@ -1,8 +1,8 @@
 
-import json_orm as orm
+import orm_json as orm
 
 from .checking import _attrs_data_class
-from json_orm.utils.exception import TableColumnNotExists
+from orm_json.utils.exception import TableColumnNotExists
            
           
 class MetaOrm(type):

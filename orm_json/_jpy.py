@@ -2,8 +2,8 @@ import json
 
 
 from typing_extensions import Any, TypeVar
-from json_orm.utils import MetaOrm
-from json_orm.methods.insert import Insert
+from orm_json.utils import MetaOrm
+from orm_json.methods.insert import Insert
 
 
 

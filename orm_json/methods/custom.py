@@ -2,7 +2,7 @@
 from typing_extensions import Callable, Any
 from functools import wraps
 
-from json_orm.utils.exception import (
+from orm_json.utils.exception import (
      NotFoundMetadata,
      TableColumnNotExists,
      ReturnError

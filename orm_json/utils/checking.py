@@ -5,8 +5,8 @@ from typing_extensions import (
      Sequence, 
      Callable
 )
-from json_orm.utils.enums import Mode
-from json_orm.utils.exception import (
+from orm_json.utils.enums import Mode
+from orm_json.utils.exception import (
      TableNotExists,
      TableColumnNotExists,
      RequiredArgument,

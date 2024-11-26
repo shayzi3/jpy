@@ -6,14 +6,14 @@ from typing_extensions import (
      Iterable,
      Callable
 )
-from json_orm.utils import (
+from orm_json.utils import (
      MetaData,
      _valide_input_data,
      _save,
      _custom,
      _get_custom_args
 )
-from json_orm.utils.exception import (
+from orm_json.utils.exception import (
      NotFoundMetadata,
      FileNotFound,
      TableNotExists

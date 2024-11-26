@@ -3,13 +3,13 @@ import os
 
 
 from typing_extensions import TypeVar, Generic
-from json_orm.utils import (
+from orm_json.utils import (
      _valide_input_data, 
      _save,
      Mode, 
      MetaData
 )
-from json_orm.utils.exception import (
+from orm_json.utils.exception import (
      FileNotFound,
      NotFoundMetadata
 )

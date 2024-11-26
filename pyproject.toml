@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "json-orm"
+name = "orm-json"
 version = "1.0.0"
 description = "So, its simple libriary for easy managment of json files and for creating a data model in them. And also an appeal to models in the most simple and beautiful form."
 authors = ["shayzi3 <tecnomega@mail.ru>"]

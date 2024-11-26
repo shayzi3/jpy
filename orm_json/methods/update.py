@@ -7,7 +7,7 @@ from typing_extensions import (
      Iterable,
      Callable
 )
-from json_orm.utils import (
+from orm_json.utils import (
      MetaData,
      _save,
      _list_or_dict,
@@ -16,7 +16,7 @@ from json_orm.utils import (
      _custom,
      _get_custom_args
 )
-from json_orm.utils.exception import (
+from orm_json.utils.exception import (
      NotFoundMetadata,
      FileNotFound,
 )
