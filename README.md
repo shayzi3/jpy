@@ -9,7 +9,7 @@ A library for interacting with json files. Creating models in these files and co
 ### Installation
 
 ```cmd
-  pip install orm_json
+  pip install orm-json
 ```
 
 ### Documentation
