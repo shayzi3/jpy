@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "json-orm"
+version = "1.0.0"
+description = "So, its simple libriary for easy managment of json files and for creating a data model in them. And also an appeal to models in the most simple and beautiful form."
+authors = ["shayzi3 <tecnomega@mail.ru>"]
+readme = "README.md"
+license = "MIT"
+repository = "https://github.com/shayzi3/json_orm"
+documentation = "https://github.com/shayzi3/json_orm/tree/master/examples"
+keywords = ["json", "orm", "python", "model"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+typing_extensions = "^4.12.2"
+pydantic = "^2.9.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
